@@ -2,6 +2,11 @@ package com.example.reverse;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.Editable;
@@ -13,6 +18,8 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.example.reverse.ui.home.HomeFragment;
+
 import java.util.ArrayList;
 
 public class Jugar extends AppCompatActivity {
@@ -21,6 +28,15 @@ public class Jugar extends AppCompatActivity {
     private EditText fraseUsuario;
     private Button empezar;
     private Chronometer cronometro;
+
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+
+    //PopuUp
+    private TextView puntuacion;
+    private Chronometer tiempo;
+    private Button salir;
+    private Button reintentar;
 
     private ArrayList<Object> frases;
     private Frase frase;
@@ -41,7 +57,7 @@ public class Jugar extends AppCompatActivity {
         empezar = findViewById(R.id.empezar);
         cronometro = findViewById(R.id.cronometro);
 
-        frases = tinyDB.getListObject("Frase", Frase.class);
+        //frases = tinyDB.getListObject("Frase", Frase.class);
 
 
 
@@ -69,21 +85,59 @@ public class Jugar extends AppCompatActivity {
                         PauseOffSet = SystemClock.elapsedRealtime() - cronometro.getBase();
                         isPlaying = false;
 
-                        /*
-                         Reset del cronometro.
-                            PauseOffSet = 0;
-                         */
+                        //Se mostrará en el PopUp una vez el usuario acabe la frase.
 
-                        if (editable.equals(fraseText.getText())){
-                            //frase = new Frase(frase.getPuntuacionMaxima(), PauseOffSet);
-                            frases.add(frase);
-                            tinyDB.putListObject("Frase", frases);
+                        contactPopUp(editable);
 
-                        }
                     }
                 });
             }
         });
+    }
+
+    public void contactPopUp(Editable editable){
+
+        puntuacion = findViewById(R.id.puntuacion_popup);
+        tiempo = findViewById(R.id.tiempo_popup);
+        reintentar = findViewById(R.id.reintentar_popup);
+        salir = findViewById(R.id.salir_popup);
+
+        puntuacion.setText(puntuacionUsuario(editable));
+        tiempo.setBase(PauseOffSet);
+
+        dialogBuilder = new AlertDialog.Builder(Jugar.this);
+        final View contactPopUp = getLayoutInflater().inflate(R.layout.popup_jugar, null);
+
+        dialogBuilder.setView(contactPopUp);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        salir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Reset del cronometro.
+                PauseOffSet = 0;
+                Frase frase = new Frase();
+                frases.add(frase);
+                tinyDB.putListObject("frase", frases);
+                Intent intent = new Intent(Jugar.this, HomeFragment.class);
+                startActivity(intent);
+            }
+        });
+
+        reintentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Reset del cronometro.
+                PauseOffSet = 0;
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private int puntuacionUsuario (Editable freseUsuario){
+
+        return 0;
     }
 
 
