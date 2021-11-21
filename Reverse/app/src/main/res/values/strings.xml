@@ -16,4 +16,8 @@
     <string name="frase_usuario">Introduce aquí la frase al revés</string>
     <string name="boton_empezar">Empezar</string>
 
+    <!---Nueva Frase-->
+    <string name="newFrase">Introduce una frase</string>
+    <string name="popupTitle">Nueva frase</string>
+    <string name="popupOK">OK</string>
 </resources>
