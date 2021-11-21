@@ -29,10 +29,9 @@ public class Jugar extends AppCompatActivity {
     private Button empezar;
     private Chronometer cronometro;
 
+    //PopuUp
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
-
-    //PopuUp
     private TextView puntuacion;
     private Chronometer tiempo;
     private Button salir;
@@ -103,9 +102,9 @@ public class Jugar extends AppCompatActivity {
         salir = findViewById(R.id.salir_popup);
 
         puntuacion.setText(puntuacionUsuario(editable));
-        tiempo.setBase(PauseOffSet);
+        tiempo.setBase(cronometro.getBase());
 
-        dialogBuilder = new AlertDialog.Builder(Jugar.this);
+        dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopUp = getLayoutInflater().inflate(R.layout.popup_jugar, null);
 
         dialogBuilder.setView(contactPopUp);
@@ -122,6 +121,7 @@ public class Jugar extends AppCompatActivity {
                 tinyDB.putListObject("frase", frases);
                 Intent intent = new Intent(Jugar.this, HomeFragment.class);
                 startActivity(intent);
+                dialog.dismiss();
             }
         });
 
