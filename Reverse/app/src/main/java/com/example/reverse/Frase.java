@@ -10,10 +10,10 @@ public class Frase implements Serializable {
     private int puntuacion;
     private long tiempo;
 
-    public Frase(String frase, int puntuacionMaxima) {
+    public Frase(String frase) {
         this.frase = frase;
         this.fraseInvertida = invertirFrase();
-        this.puntuacionMaxima = puntuacionMaxima;
+        this.puntuacionMaxima = puntuacionMaxima();
         this.puntuacion = 0;
         this.tiempo = Long.MAX_VALUE;
     }
@@ -22,31 +22,19 @@ public class Frase implements Serializable {
         return frase;
     }
 
-    public void setFrase(String frase) {
-        this.frase = frase;
-    }
-
     public String getFraseInvertida() {
         return fraseInvertida;
-    }
-
-    public void setFraseInvertida(String fraseInvertida) {
-        this.fraseInvertida = fraseInvertida;
     }
 
     public int getPuntuacionMaxima() {
         return puntuacionMaxima;
     }
 
-    public void setPuntuacionMaxima(int puntuacionMaxima) {
-        this.puntuacionMaxima = puntuacionMaxima;
-    }
-
     public int getPuntuacion() {
         return puntuacion;
     }
 
-    public void setPuntuacion(int puntuacion, String frase) {
+    public void setPuntuacion(int puntuacion) {
         this.puntuacion = puntuacion;
     }
 
@@ -58,7 +46,7 @@ public class Frase implements Serializable {
         this.tiempo = tiempo;
     }
 
-    public static int puntuacionMaxima(String frase){
+    private int puntuacionMaxima(){
 
         int longitudFrase = (int) frase.chars().filter(ch -> ch != ' ').count();
         int puntosTotales;
@@ -72,7 +60,6 @@ public class Frase implements Serializable {
         } else {
             puntosTotales = 30;
         }
-
         return puntosTotales;
     }
 

@@ -58,7 +58,7 @@ public class Jugar extends AppCompatActivity {
 
         //Sacamos los datos del intent
         Intent intent = getIntent();
-        Frase frase = (Frase) intent.getSerializableExtra("fraseJugar");
+        frase = (Frase) intent.getSerializableExtra("fraseJugar");
         fraseText.setText(frase.getFrase());
 
 
@@ -118,7 +118,9 @@ public class Jugar extends AppCompatActivity {
             public void onClick(View v) {
                 //Reset del cronometro.
                 PauseOffSet = 0;
-                Frase frase = new Frase();
+                //Asignación de la puntuacion y tiempo a la frase
+                frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
+                frase.setTiempo(Long.parseLong(tiempo.getText().toString()));
                 frases.add(frase);
                 tinyDB.putListObject("frase", frases);
                 Intent intent = new Intent(Jugar.this, HomeFragment.class);
