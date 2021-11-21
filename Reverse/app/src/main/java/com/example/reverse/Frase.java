@@ -1,5 +1,7 @@
 package com.example.reverse;
 
+import android.os.SystemClock;
+
 import java.io.Serializable;
 
 public class Frase implements Serializable {
@@ -15,7 +17,7 @@ public class Frase implements Serializable {
         this.fraseInvertida = invertirFrase();
         this.puntuacionMaxima = puntuacionMaxima();
         this.puntuacion = 0;
-        this.tiempo = Long.MAX_VALUE;
+        this.tiempo = 0L;
     }
 
     public String getFrase() {

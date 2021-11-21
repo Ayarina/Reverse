@@ -112,7 +112,7 @@ public class Jugar extends AppCompatActivity {
                 PauseOffSet = 0;
                 //Asignación de la puntuacion y tiempo a la frase
                 frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
-                frase.setTiempo(Long.parseLong(tiempo.getText().toString()));
+                frase.setTiempo(tiempo.getBase());
                 frases.add(frase);
                 tinyDB.putListObject("frases", frases);
                 Intent intent = new Intent(Jugar.this, HomeFragment.class);
