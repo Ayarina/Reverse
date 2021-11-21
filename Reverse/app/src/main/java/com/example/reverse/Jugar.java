@@ -26,6 +26,7 @@ public class Jugar extends AppCompatActivity {
 
     private TextView fraseText;
     private EditText fraseUsuario;
+    private Button empezar;
     private Chronometer cronometro;
     private Button fin;
     private Button empezar;
@@ -54,9 +55,13 @@ public class Jugar extends AppCompatActivity {
 
         fraseText = findViewById(R.id.frase);
         fraseUsuario = findViewById(R.id.usuario_frase);
-        cronometro = findViewById(R.id.cronometro);
         empezar = findViewById(R.id.empezar);
-        fin = findViewById(R.id.fin);
+        cronometro = findViewById(R.id.cronometro);
+
+        //Sacamos los datos del intent
+        Intent intent = getIntent();
+        frase = (Frase) intent.getSerializableExtra("fraseJugar");
+        fraseText.setText(frase.getFrase());
 
         fin.setVisibility(View.GONE);
 
@@ -68,6 +73,7 @@ public class Jugar extends AppCompatActivity {
                 isPlaying = true;
 
                 fin.setVisibility(View.VISIBLE);
+                empezar.setVisibility(View.GONE);
 
                 fin.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -85,7 +91,6 @@ public class Jugar extends AppCompatActivity {
         tiempo = findViewById(R.id.tiempo_popup);
         reintentar = findViewById(R.id.reintentar_popup);
         salir = findViewById(R.id.salir_popup);
-
         puntuacion.setText(puntuacionUsuario(fraseUsuario));
         tiempo.setBase(cronometro.getBase());
 
@@ -101,7 +106,9 @@ public class Jugar extends AppCompatActivity {
             public void onClick(View v) {
                 //Reset del cronometro.
                 PauseOffSet = 0;
-                Frase frase = new Frase();
+                //Asignación de la puntuacion y tiempo a la frase
+                frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
+                frase.setTiempo(Long.parseLong(tiempo.getText().toString()));
                 frases.add(frase);
                 tinyDB.putListObject("frase", frases);
                 Intent intent = new Intent(Jugar.this, HomeFragment.class);
