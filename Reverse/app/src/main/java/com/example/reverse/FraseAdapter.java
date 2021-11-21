@@ -53,7 +53,8 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
                 //enviar a la actividad jugar
                 Intent intent = new Intent(v.getContext(), Jugar.class);
                 intent.putExtra("fraseJugar", frase);
-                v.getContext().startActivity(intent);            }
+                v.getContext().startActivity(intent);
+            }
         });
 
     }

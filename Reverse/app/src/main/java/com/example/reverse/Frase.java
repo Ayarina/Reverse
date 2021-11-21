@@ -17,7 +17,7 @@ public class Frase implements Serializable {
         this.fraseInvertida = invertirFrase();
         this.puntuacionMaxima = puntuacionMaxima();
         this.puntuacion = 0;
-        this.tiempo = 0l;
+        this.tiempo = 0L;
     }
 
     public String getFrase() {
