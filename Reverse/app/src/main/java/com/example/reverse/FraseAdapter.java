@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,8 +44,8 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         //Seteamos los datos del usuario añadido al crearse.
 
         holder.frase.setText(frase.getFrase());
-        holder.score.setText(frase.getPuntuacion());
-        holder.tiempo.setText(String.valueOf(frase.getTiempo()));
+        //score --
+        holder.tiempo.setBase(frase.getTiempo());
         //boton
         holder.jugar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +76,8 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
         //Comunicacion directa con frase_layout
         //private Type Elementos del layout;
-        private TextView frase, score, tiempo; //frase_tarjeta
+        private TextView frase, score;
+        private Chronometer tiempo; //frase_tarjeta
         private Button jugar;
 
         public ViewHolder(@NonNull View itemView) {

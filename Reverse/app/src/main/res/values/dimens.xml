@@ -7,4 +7,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="frase">20dp</dimen>
     <dimen name="footerTarjeta">10dp</dimen>
+    <dimen name="margen_tarjeta">8dp</dimen>
 </resources>
