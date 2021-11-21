@@ -51,18 +51,16 @@ public class Frase implements Serializable {
     private int puntuacionMaxima(){
 
         int longitudFrase = (int) frase.chars().filter(ch -> ch != ' ').count();
-        int puntosTotales;
 
         if (longitudFrase <= 30){
-            puntosTotales = 10;
+            return 50;
         } else if (longitudFrase <= 50){
-            puntosTotales = 15;
+            return 100;
         } else if (longitudFrase <= 100){
-            puntosTotales = 20;
+            return 150;
         } else {
-            puntosTotales = 30;
+            return 200;
         }
-        return puntosTotales;
     }
 
     private String invertirFrase(){

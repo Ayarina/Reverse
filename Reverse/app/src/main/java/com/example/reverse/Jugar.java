@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,7 +27,7 @@ public class Jugar extends AppCompatActivity {
 
     private TextView fraseText;
     private EditText fraseUsuario;
-    private Chronometer cronometro;
+    private TextView cronometro;
     private Button fin;
     private Button empezar;
 
@@ -42,7 +43,10 @@ public class Jugar extends AppCompatActivity {
     private Frase frase;
     private TinyDB tinyDB;
 
-    private long PauseOffSet = 0;
+    private Thread crono;
+    private Handler handler = new Handler();
+    private int mili = 0, sec = 0, min = 0;
+    private long time;
     private boolean isPlaying = false;
 
     @Override
@@ -64,14 +68,77 @@ public class Jugar extends AppCompatActivity {
         fraseText.setText(frase.getFrase());
 
         fin.setVisibility(View.GONE);
-        
+
+
         empezar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                isPlaying = true;
+
+                crono = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (true){
+                            if (isPlaying){
+                                try {
+                                    Thread.sleep(1);
+                                } catch (InterruptedException e){
+                                    e.printStackTrace();
+                                }
+                                mili++;
+                                if (mili == 599){
+                                    sec++;
+                                    mili = 0;
+                                }
+
+                                if (sec == 59){
+                                    min++;
+                                    sec = 0;
+                                }
+
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        String m="", s="", mi="";
+                                        if (mili < 10){
+                                            m = "00"+mili;
+                                        }
+                                        else if (mili < 100){
+                                            m = "0"+mili;
+                                        }
+                                        else {
+                                            m = ""+mili;
+                                        }
+
+                                        if (sec < 10){
+                                            s = "0"+sec;
+                                        }
+                                        else {
+                                            s = ""+sec;
+                                        }
+
+                                        if (min < 10){
+                                            mi = "0"+min;
+                                        }
+                                        else {
+                                            mi = ""+min;
+                                        }
+                                        //Aqui ira el setText
+                                        cronometro.setText(mi+":"+s+","+m);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+                crono.start();
+
+                /*
                 cronometro.setBase(SystemClock.elapsedRealtime() - PauseOffSet);
                 cronometro.start();
                 isPlaying = true;
+                 */
 
                 fin.setVisibility(View.VISIBLE);
                 empezar.setVisibility(View.GONE);
@@ -79,8 +146,6 @@ public class Jugar extends AppCompatActivity {
                 fin.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        cronometro.stop();
-                        PauseOffSet = SystemClock.elapsedRealtime() - cronometro.getBase();
                         isPlaying = false;
                         contactPopUp();
                     }
@@ -91,12 +156,14 @@ public class Jugar extends AppCompatActivity {
 
     private void contactPopUp(){
 
+        //Meter la informacion del cronometro aqui
+
         puntuacion = findViewById(R.id.puntuacion_popup);
         tiempo = findViewById(R.id.tiempo_popup);
         reintentar = findViewById(R.id.reintentar_popup);
         salir = findViewById(R.id.salir_popup);
         puntuacion.setText(puntuacionUsuario());
-        tiempo.setBase(cronometro.getBase());
+        //tiempo.setBase(cronometro.getBase());
 
         dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopUp = getLayoutInflater().inflate(R.layout.popup_jugar, null);
@@ -109,7 +176,7 @@ public class Jugar extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Reset del cronometro.
-                PauseOffSet = 0;
+
                 //Asignación de la puntuacion y tiempo a la frase
                 frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
                 frase.setTiempo(tiempo.getBase());
@@ -118,6 +185,7 @@ public class Jugar extends AppCompatActivity {
                 Intent intent = new Intent(Jugar.this, HomeFragment.class);
                 startActivity(intent);
                 dialog.dismiss();
+
             }
         });
 
@@ -125,7 +193,11 @@ public class Jugar extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Reset del cronometro.
-                PauseOffSet = 0;
+                min = 0;
+                sec = 0;
+                mili = 0;
+                //setText del cronometro reseteado
+                cronometro.setText("00:00,000");
                 dialog.dismiss();
             }
         });
@@ -176,10 +248,5 @@ public class Jugar extends AppCompatActivity {
 
         return puntos;
     }
-
-
-
-
-
 
 }

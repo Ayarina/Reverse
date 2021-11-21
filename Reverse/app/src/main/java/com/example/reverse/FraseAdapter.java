@@ -44,7 +44,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
 
         holder.frase.setText(frase.getFrase());
         //score --
-        holder.tiempo.setBase(frase.getTiempo());
+        holder.tiempo.setText(0);
         //boton
         holder.jugar.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -27,7 +27,7 @@
         android:layout_below="@+id/frase"
         />
 
-    <Chronometer
+    <TextView
         android:id="@+id/cronometro"
         android:textSize="30sp"
         android:layout_width="match_parent"
