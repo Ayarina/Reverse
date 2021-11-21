@@ -10,12 +10,12 @@ public class Frase implements Serializable {
     private int puntuacion;
     private long tiempo;
 
-    public Frase(String frase, String fraseInvertida, int puntuacionMaxima, int puntuacion, long tiempo) {
+    public Frase(String frase, int puntuacionMaxima) {
         this.frase = frase;
-        this.fraseInvertida = fraseInvertida;
+        this.fraseInvertida = invertirFrase();
         this.puntuacionMaxima = puntuacionMaxima;
-        this.puntuacion = puntuacion;
-        this.tiempo = tiempo;
+        this.puntuacion = 0;
+        this.tiempo = Long.MAX_VALUE;
     }
 
     public String getFrase() {
@@ -76,11 +76,9 @@ public class Frase implements Serializable {
         return puntosTotales;
     }
 
-    public static String invertirFrase(String frase){
-
+    private String invertirFrase(){
         StringBuilder fraserev = new StringBuilder(frase);
-        frase = fraserev.reverse().toString();
 
-        return frase;
+        return fraserev.reverse().toString();
     }
 }
