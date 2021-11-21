@@ -26,7 +26,6 @@ public class Jugar extends AppCompatActivity {
 
     private TextView fraseText;
     private EditText fraseUsuario;
-    private Button empezar;
     private Chronometer cronometro;
     private Button fin;
     private Button empezar;
@@ -56,6 +55,7 @@ public class Jugar extends AppCompatActivity {
         fraseText = findViewById(R.id.frase);
         fraseUsuario = findViewById(R.id.usuario_frase);
         empezar = findViewById(R.id.empezar);
+        fin = findViewById(R.id.fin);
         cronometro = findViewById(R.id.cronometro);
 
         //Sacamos los datos del intent
@@ -64,7 +64,7 @@ public class Jugar extends AppCompatActivity {
         fraseText.setText(frase.getFrase());
 
         fin.setVisibility(View.GONE);
-
+        
         empezar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
