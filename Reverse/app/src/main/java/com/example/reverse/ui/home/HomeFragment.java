@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reverse.Frase;
 import com.example.reverse.FraseAdapter;
 import com.example.reverse.R;
 import com.example.reverse.TinyDB;
@@ -44,10 +45,11 @@ public class HomeFragment extends Fragment {
         //Inicializamos la base de datos
         tinyDB = new TinyDB(getContext());
         //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
-        if(tinyDB.getListObject("key", Usuario.class) != null)
-            frases = tinyDB.getListObject("UsersData", Usuario.class);
+        if(tinyDB.getListObject("frases", Frase.class) != null)
+            frases = tinyDB.getListObject("frases", Frase.class);
         else
             frases = new ArrayList<>();
+        
         //Inicializamos el adaptador
         fraseAdapter = new FraseAdapter(frases);
 

@@ -1,50 +1,40 @@
 package com.example.reverse;
 
-public class Frase {
+import java.io.Serializable;
 
-    private String frases;
+public class Frase implements Serializable {
+
+    private String frase;
     private String fraseInvertida;
     private int puntuacionMaxima;
     private int puntuacion;
     private long tiempo;
 
-    public Frase(String frases, String fraseInvertida, int puntuacionMaxima, int puntuacion, long tiempo) {
-        this.frases = frases;
-        this.fraseInvertida = fraseInvertida;
-        this.puntuacionMaxima = puntuacionMaxima;
-        this.puntuacion = puntuacion;
-        this.tiempo = tiempo;
+    public Frase(String frase) {
+        this.frase = frase;
+        this.fraseInvertida = invertirFrase();
+        this.puntuacionMaxima = puntuacionMaxima();
+        this.puntuacion = 0;
+        this.tiempo = Long.MAX_VALUE;
     }
 
-    public String getFrases() {
-        return frases;
-    }
-
-    public void setFrases(String frases) {
-        this.frases = frases;
+    public String getFrase() {
+        return frase;
     }
 
     public String getFraseInvertida() {
         return fraseInvertida;
     }
 
-    public void setFraseInvertida(String fraseInvertida) {
-        this.fraseInvertida = fraseInvertida;
-    }
-
     public int getPuntuacionMaxima() {
         return puntuacionMaxima;
-    }
-
-    public void setPuntuacionMaxima(int puntuacionMaxima) {
-        this.puntuacionMaxima = puntuacionMaxima;
     }
 
     public int getPuntuacion() {
         return puntuacion;
     }
 
-    public void setPuntuacion(int puntuacion, String frase) {
+    public void setPuntuacion(int puntuacion) {
         this.puntuacion = puntuacion;
     }
 
@@ -56,7 +46,7 @@ public class Frase {
         this.tiempo = tiempo;
     }
 
-    public static int puntuacionMaxima(String frase){
+    private int puntuacionMaxima(){
 
         int longitudFrase = (int) frase.chars().filter(ch -> ch != ' ').count();
         int puntosTotales;
@@ -70,15 +60,12 @@ public class Frase {
         } else {
             puntosTotales = 30;
         }
-
         return puntosTotales;
     }
 
-    public static String invertirFrase(String frase){
-
+    private String invertirFrase(){
         StringBuilder fraserev = new StringBuilder(frase);
-        frase = fraserev.reverse().toString();
 
-        return frase;
+        return fraserev.reverse().toString();
     }
 }

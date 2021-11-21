@@ -110,7 +110,7 @@ public class Jugar extends AppCompatActivity {
                 frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
                 frase.setTiempo(Long.parseLong(tiempo.getText().toString()));
                 frases.add(frase);
-                tinyDB.putListObject("frase", frases);
+                tinyDB.putListObject("frases", frases);
                 Intent intent = new Intent(Jugar.this, HomeFragment.class);
                 startActivity(intent);
                 dialog.dismiss();
