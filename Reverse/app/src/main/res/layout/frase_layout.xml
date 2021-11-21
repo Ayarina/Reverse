@@ -30,6 +30,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/frase"
                     android:text="Frase"
+                    android:textColor="@color/texto"
                     />
 
                 <LinearLayout
@@ -45,22 +46,30 @@
                         android:id="@+id/score_tarjeta"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Score"/>
+                        android:text="Score"
+                        android:textColor="@color/texto"
+                        />
 
                     <TextView
                         android:id="@+id/tiempo_tarjeta"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Tiempo"
-                        android:layout_marginLeft="@dimen/footerTarjeta"/>
+                        android:layout_marginLeft="@dimen/footerTarjeta"
+                        android:textColor="@color/texto"
+                        />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <Button
-                            android:layout_width="20dp"
+                            android:id="@+id/jugar_tarjeta"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"/>
+                            android:layout_alignParentEnd="true"
+                            android:backgroundTint="@color/black"
+                            android:text="JUGAR" />
                     </RelativeLayout>
 
 

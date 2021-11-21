@@ -1,27 +1,29 @@
 package com.example.reverse;
 
-public class Frase {
+import java.io.Serializable;
 
-    private String frases;
+public class Frase implements Serializable {
+
+    private String frase;
     private String fraseInvertida;
     private int puntuacionMaxima;
     private int puntuacion;
     private long tiempo;
 
-    public Frase(String frases, String fraseInvertida, int puntuacionMaxima, int puntuacion, long tiempo) {
-        this.frases = frases;
+    public Frase(String frase, String fraseInvertida, int puntuacionMaxima, int puntuacion, long tiempo) {
+        this.frase = frase;
         this.fraseInvertida = fraseInvertida;
         this.puntuacionMaxima = puntuacionMaxima;
         this.puntuacion = puntuacion;
         this.tiempo = tiempo;
     }
 
-    public String getFrases() {
-        return frases;
+    public String getFrase() {
+        return frase;
     }
 
-    public void setFrases(String frases) {
-        this.frases = frases;
+    public void setFrase(String frase) {
+        this.frase = frase;
     }
 
     public String getFraseInvertida() {

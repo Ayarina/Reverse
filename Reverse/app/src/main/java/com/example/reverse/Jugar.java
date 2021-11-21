@@ -56,8 +56,10 @@ public class Jugar extends AppCompatActivity {
         empezar = findViewById(R.id.empezar);
         cronometro = findViewById(R.id.cronometro);
 
-        //frases = tinyDB.getListObject("Frase", Frase.class);
-
+        //Sacamos los datos del intent
+        Intent intent = getIntent();
+        Frase frase = (Frase) intent.getSerializableExtra("fraseJugar");
+        fraseText.setText(frase.getFrase());
 
 
         empezar.setOnClickListener(new View.OnClickListener() {
