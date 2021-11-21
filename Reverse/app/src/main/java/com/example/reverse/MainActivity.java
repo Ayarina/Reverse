@@ -20,11 +20,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.reverse.databinding.ActivityMainBinding;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private FloatingActionButton fab_plus;
+
+    private TinyDB tinyDB;
+    private ArrayList<Object> frases;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        tinyDB = new TinyDB(this);
+        //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
+        if(tinyDB.getListObject("frases", Frase.class) != null)
+            frases = tinyDB.getListObject("frases", Frase.class);
+        else
+            frases = new ArrayList<>();
+
 
         fab_plus = findViewById(R.id.fab);
         fab_plus.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //añadir frase
+                                Frase frase = new Frase(et_popup.getText().toString());
+                                frases.add(frase);
+                                tinyDB.putListObject("frases", frases);
                             }
                         });
 
