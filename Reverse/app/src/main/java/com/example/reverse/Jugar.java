@@ -26,8 +26,9 @@ public class Jugar extends AppCompatActivity {
 
     private TextView fraseText;
     private EditText fraseUsuario;
-    private Button empezar;
     private Chronometer cronometro;
+    private Button fin;
+    private Button empezar;
 
     //PopuUp
     private AlertDialog.Builder dialogBuilder;
@@ -53,12 +54,11 @@ public class Jugar extends AppCompatActivity {
 
         fraseText = findViewById(R.id.frase);
         fraseUsuario = findViewById(R.id.usuario_frase);
-        empezar = findViewById(R.id.empezar);
         cronometro = findViewById(R.id.cronometro);
+        empezar = findViewById(R.id.empezar);
+        fin = findViewById(R.id.fin);
 
-        //frases = tinyDB.getListObject("Frase", Frase.class);
-
-
+        fin.setVisibility(View.GONE);
 
         empezar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,41 +67,26 @@ public class Jugar extends AppCompatActivity {
                 cronometro.start();
                 isPlaying = true;
 
-                fraseUsuario.addTextChangedListener(new TextWatcher() {
+                fin.setVisibility(View.VISIBLE);
+
+                fin.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        cronometro.stop();
-                        PauseOffSet = SystemClock.elapsedRealtime() - cronometro.getBase();
-                        isPlaying = false;
-
-                        //Se mostrará en el PopUp una vez el usuario acabe la frase.
-
-                        contactPopUp(editable);
-
+                    public void onClick(View v) {
+                        contactPopUp(fraseUsuario);
                     }
                 });
             }
         });
     }
 
-    public void contactPopUp(Editable editable){
+    private void contactPopUp(EditText fraseUsuario){
 
         puntuacion = findViewById(R.id.puntuacion_popup);
         tiempo = findViewById(R.id.tiempo_popup);
         reintentar = findViewById(R.id.reintentar_popup);
         salir = findViewById(R.id.salir_popup);
 
-        puntuacion.setText(puntuacionUsuario(editable));
+        puntuacion.setText(puntuacionUsuario(fraseUsuario));
         tiempo.setBase(cronometro.getBase());
 
         dialogBuilder = new AlertDialog.Builder(this);
@@ -135,7 +120,7 @@ public class Jugar extends AppCompatActivity {
         });
     }
 
-    private int puntuacionUsuario (Editable freseUsuario){
+    private int puntuacionUsuario (EditText freseUsuario){
 
         return 0;
     }
