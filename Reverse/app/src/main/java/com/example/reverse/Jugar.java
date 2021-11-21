@@ -78,20 +78,23 @@ public class Jugar extends AppCompatActivity {
                 fin.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        contactPopUp(fraseUsuario);
+                        cronometro.stop();
+                        PauseOffSet = SystemClock.elapsedRealtime() - cronometro.getBase();
+                        isPlaying = false;
+                        contactPopUp();
                     }
                 });
             }
         });
     }
 
-    private void contactPopUp(EditText fraseUsuario){
+    private void contactPopUp(){
 
         puntuacion = findViewById(R.id.puntuacion_popup);
         tiempo = findViewById(R.id.tiempo_popup);
         reintentar = findViewById(R.id.reintentar_popup);
         salir = findViewById(R.id.salir_popup);
-        puntuacion.setText(puntuacionUsuario(fraseUsuario));
+        puntuacion.setText(puntuacionUsuario());
         tiempo.setBase(cronometro.getBase());
 
         dialogBuilder = new AlertDialog.Builder(this);
@@ -127,9 +130,24 @@ public class Jugar extends AppCompatActivity {
         });
     }
 
-    private int puntuacionUsuario (EditText freseUsuario){
+    private int puntuacionUsuario (){
 
-        return 0;
+        int puntos = frase.getPuntuacionMaxima();
+
+        if (fraseUsuario.equals(frase.getFraseInvertida())){
+            return frase.getPuntuacionMaxima();
+        }
+        else if (fraseUsuario.length() == frase.getFraseInvertida().length()){
+            for (int aux = 0; aux < fraseUsuario.length(); aux++){
+                if (fraseUsuario.toString().charAt(aux) != frase.getFraseInvertida().charAt(aux)){
+                    puntos -= 2;
+                }
+            }
+        }
+        else {
+
+        }
+        return puntos;
     }
 
 
