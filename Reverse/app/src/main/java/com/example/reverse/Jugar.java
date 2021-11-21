@@ -68,6 +68,7 @@ public class Jugar extends AppCompatActivity {
         empezar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 cronometro.setBase(SystemClock.elapsedRealtime() - PauseOffSet);
                 cronometro.start();
                 isPlaying = true;
@@ -133,20 +134,46 @@ public class Jugar extends AppCompatActivity {
     private int puntuacionUsuario (){
 
         int puntos = frase.getPuntuacionMaxima();
+        int aux;
 
         if (fraseUsuario.equals(frase.getFraseInvertida())){
+
             return frase.getPuntuacionMaxima();
         }
         else if (fraseUsuario.length() == frase.getFraseInvertida().length()){
-            for (int aux = 0; aux < fraseUsuario.length(); aux++){
+
+            for (aux = 0; aux < fraseUsuario.length(); aux++){
+
                 if (fraseUsuario.toString().charAt(aux) != frase.getFraseInvertida().charAt(aux)){
                     puntos -= 2;
                 }
             }
         }
+        else if (fraseUsuario.length() < frase.getFraseInvertida().length()){
+
+            for (aux = 0; aux < fraseUsuario.length(); aux++){
+
+                if (fraseUsuario.toString().charAt(aux) != frase.getFraseInvertida().charAt(aux)){
+                    puntos -= 2;
+                }
+            }
+
+            aux = frase.getFraseInvertida().length() - (aux + 1);
+            puntos -= (aux * 2);
+        }
         else {
 
+            for (aux = 0; aux < frase.getFraseInvertida().length(); aux++){
+
+                if (fraseUsuario.toString().charAt(aux) != frase.getFraseInvertida().charAt(aux)){
+                    puntos -= 2;
+                }
+            }
+
+            aux = fraseUsuario.length() - (aux + 1);
+            puntos -= (aux * 2);
         }
+
         return puntos;
     }
 
