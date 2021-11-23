@@ -2,21 +2,14 @@ package com.example.reverse;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.EditText;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.reverse.ui.home.HomeFragment;
@@ -28,16 +21,9 @@ public class Jugar extends AppCompatActivity {
     private TextView fraseText;
     private EditText fraseUsuario;
     private TextView cronometro;
-    private Button fin;
-    private Button empezar;
+    private Button boton;
 
     //PopuUp
-    private AlertDialog.Builder dialogBuilder;
-    private AlertDialog dialog;
-    private TextView puntuacion;
-    private Chronometer tiempo;
-    private Button salir;
-    private Button reintentar;
 
     private ArrayList<Object> frases;
     private Frase frase;
@@ -45,8 +31,8 @@ public class Jugar extends AppCompatActivity {
 
     private Thread crono;
     private Handler handler = new Handler();
-    private int mili = 0, sec = 0, min = 0;
-    private long time;
+    private int milisegundos = 0, segundos = 0, minutos = 0;
+    String mili="", seg="", min="";
     private boolean isPlaying = false;
 
     @Override
@@ -58,8 +44,7 @@ public class Jugar extends AppCompatActivity {
 
         fraseText = findViewById(R.id.frase);
         fraseUsuario = findViewById(R.id.usuario_frase);
-        empezar = findViewById(R.id.empezar);
-        fin = findViewById(R.id.fin);
+        boton = findViewById(R.id.boton_jugar);
         cronometro = findViewById(R.id.cronometro);
 
         //Sacamos los datos del intent
@@ -67,83 +52,82 @@ public class Jugar extends AppCompatActivity {
         frase = (Frase) intent.getSerializableExtra("fraseJugar");
         fraseText.setText(frase.getFrase());
 
-        fin.setVisibility(View.GONE);
+        crono = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    if (isPlaying){
+                        try {
+                            Thread.sleep(1);
+                        } catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
+                        milisegundos++;
+                        if (milisegundos == 599){
+                            segundos++;
+                            milisegundos = 0;
+                        }
 
+                        if (segundos == 59){
+                            minutos++;
+                            segundos = 0;
+                        }
 
-        empezar.setOnClickListener(new View.OnClickListener() {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (milisegundos < 10){
+                                    mili = "00"+milisegundos;
+                                }
+                                else if (milisegundos < 100){
+                                    mili = "0"+milisegundos;
+                                }
+                                else {
+                                    mili = ""+milisegundos;
+                                }
+
+                                if (segundos < 10){
+                                    seg = "0"+segundos;
+                                }
+                                else {
+                                    seg = ""+segundos;
+                                }
+
+                                if (minutos < 10){
+                                    min = "0"+minutos;
+                                }
+                                else {
+                                    min = ""+minutos;
+                                }
+                                cronometro.setText(min+":"+seg+","+mili);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        crono.start();
+
+        boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 isPlaying = true;
 
-                crono = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        while (true){
-                            if (isPlaying){
-                                try {
-                                    Thread.sleep(1);
-                                } catch (InterruptedException e){
-                                    e.printStackTrace();
-                                }
-                                mili++;
-                                if (mili == 599){
-                                    sec++;
-                                    mili = 0;
-                                }
 
-                                if (sec == 59){
-                                    min++;
-                                    sec = 0;
-                                }
+                boton.setText("Acabar");
 
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        String m="", s="", mi="";
-                                        if (mili < 10){
-                                            m = "00"+mili;
-                                        }
-                                        else if (mili < 100){
-                                            m = "0"+mili;
-                                        }
-                                        else {
-                                            m = ""+mili;
-                                        }
+                //Si el usuario se pasa de este tiempo, inmediatamente será enviado al HomeFragment.
+                if (minutos == 59 && segundos == 59 && milisegundos == 999){
+                    isPlaying = false;
 
-                                        if (sec < 10){
-                                            s = "0"+sec;
-                                        }
-                                        else {
-                                            s = ""+sec;
-                                        }
+                    //Toast aqui para informar al usuario
 
-                                        if (min < 10){
-                                            mi = "0"+min;
-                                        }
-                                        else {
-                                            mi = ""+min;
-                                        }
-                                        //Aqui ira el setText
-                                        cronometro.setText(mi+":"+s+","+m);
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
-                crono.start();
+                    Intent intent = new Intent(Jugar.this, HomeFragment.class);
+                    startActivity(intent);
+                }
 
-                /*
-                cronometro.setBase(SystemClock.elapsedRealtime() - PauseOffSet);
-                cronometro.start();
-                isPlaying = true;
-                 */
-
-                fin.setVisibility(View.VISIBLE);
-                empezar.setVisibility(View.GONE);
-
-                fin.setOnClickListener(new View.OnClickListener() {
+                boton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         isPlaying = false;
@@ -156,6 +140,14 @@ public class Jugar extends AppCompatActivity {
 
     private void contactPopUp(){
 
+        AlertDialog.Builder dialogBuilder;
+        AlertDialog dialog;
+        TextView puntuacion;
+        TextView tiempo;
+        Button salir;
+        Button reintentar;
+
+
         //Meter la informacion del cronometro aqui
 
         puntuacion = findViewById(R.id.puntuacion_popup);
@@ -163,7 +155,7 @@ public class Jugar extends AppCompatActivity {
         reintentar = findViewById(R.id.reintentar_popup);
         salir = findViewById(R.id.salir_popup);
         puntuacion.setText(puntuacionUsuario());
-        //tiempo.setBase(cronometro.getBase());
+        tiempo.setText(min+":"+seg+","+mili);
 
         dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopUp = getLayoutInflater().inflate(R.layout.popup_jugar, null);
@@ -175,48 +167,80 @@ public class Jugar extends AppCompatActivity {
         salir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Reset del cronometro.
 
-                //Asignación de la puntuacion y tiempo a la frase
-                frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
-                frase.setTiempo(tiempo.getBase());
-                frases.add(frase);
-                tinyDB.putListObject("frases", frases);
+                //Asignación de la puntuacion y tiempo a la frase (Se prioriza una puntuacion alta al tiempo)
+                if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion() || frase.getPuntuacion() == 0){
+
+                    frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
+                    frase.setTiempo(convertirAMilisegundos());
+                    frases.add(frase);
+                    tinyDB.putListObject("frases", frases);
+
+                } else if (Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()){
+
+                    frase.setTiempo(convertirAMilisegundos());
+                    frases.add(frase);
+                    tinyDB.putListObject("frases", frases);
+                }
+
                 Intent intent = new Intent(Jugar.this, HomeFragment.class);
                 startActivity(intent);
+
                 dialog.dismiss();
 
             }
         });
 
         reintentar.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
                 //Reset del cronometro.
-                min = 0;
-                sec = 0;
-                mili = 0;
+                minutos = 0;
+                segundos = 0;
+                milisegundos = 0;
+
                 //setText del cronometro reseteado
                 cronometro.setText("00:00,000");
+
+                boton.setText("Empezar");
+
                 dialog.dismiss();
             }
         });
     }
+
+    private long convertirAMilisegundos (){
+        return ((minutos * 1000L)*60)+(segundos * 1000L)+milisegundos;
+    }
+/*
+    private String conversorTiempo(){
+
+        int minutos, segundos, milisegundos;
+
+        milisegundos = (int) frase.getTiempo()%1000;
+        segundos = (int) ((frase.getTiempo()-milisegundos)/1000)%60;
+        minutos = (int) ((((frase.getTiempo()-milisegundos)/1000)-segundos)/60)%60;
+
+        return minutos+":"+segundos+","+milisegundos;
+    }
+
+ */
 
     private int puntuacionUsuario (){
 
         int puntos = frase.getPuntuacionMaxima();
         int aux;
 
-        if (fraseUsuario.equals(frase.getFraseInvertida())){
+        if (fraseUsuario.getText().toString().equals(frase.getFraseInvertida())){
 
             return frase.getPuntuacionMaxima();
         }
         else if (fraseUsuario.length() == frase.getFraseInvertida().length()){
 
-            for (aux = 0; aux < fraseUsuario.length(); aux++){
+            for (int i = 0; i < fraseUsuario.length(); i++){
 
-                if (fraseUsuario.toString().charAt(aux) != frase.getFraseInvertida().charAt(aux)){
+                if (fraseUsuario.toString().charAt(i) != frase.getFraseInvertida().charAt(i)){
                     puntos -= 2;
                 }
             }

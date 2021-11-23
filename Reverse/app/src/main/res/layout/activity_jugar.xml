@@ -38,25 +38,14 @@
         />
 
     <Button
-        android:id="@+id/fin"
-        android:text="Fin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="30dp"
-        android:layout_below="@id/cronometro"
-        />
-
-    <Button
-        android:id="@+id/empezar"
+        android:id="@+id/boton_jugar"
         android:text="@string/boton_empezar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/fin"
+        android:layout_marginTop="80dp"
+        android:layout_below="@id/usuario_frase"
         />
 
 
