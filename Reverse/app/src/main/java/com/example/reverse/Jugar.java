@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.reverse.ui.home.HomeFragment;
 
@@ -122,6 +123,7 @@ public class Jugar extends AppCompatActivity {
                     isPlaying = false;
 
                     //Toast aqui para informar al usuario
+                    Toast.makeText(Jugar.this, "El tiempo ha superado el permitido", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(Jugar.this, HomeFragment.class);
                     startActivity(intent);
@@ -167,18 +169,19 @@ public class Jugar extends AppCompatActivity {
         salir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                long tmp = convertirAMilisegundos();
 
                 //Asignación de la puntuacion y tiempo a la frase (Se prioriza una puntuacion alta al tiempo)
-                if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion() || frase.getPuntuacion() == 0){
+                if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
 
                     frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
-                    frase.setTiempo(convertirAMilisegundos());
+                    frase.setTiempo(tmp);
                     frases.add(frase);
                     tinyDB.putListObject("frases", frases);
 
-                } else if (Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()){
+                } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion())&& (tmp < frase.getTiempo())){
 
-                    frase.setTiempo(convertirAMilisegundos());
+                    frase.setTiempo(tmp);
                     frases.add(frase);
                     tinyDB.putListObject("frases", frases);
                 }
