@@ -1,6 +1,5 @@
 package com.example.reverse;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -8,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,7 +17,7 @@ import com.example.reverse.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 
-public class Jugar extends AppCompatActivity {
+public class Jugar extends AppCompatActivity{
 
     private TextView fraseText;
     private EditText fraseUsuario;
@@ -33,16 +31,18 @@ public class Jugar extends AppCompatActivity {
     private Frase frase;
     private TinyDB tinyDB;
 
-    private Thread crono;
-    private Handler handler = new Handler();
+
     private int milisegundos = 0, segundos = 0, minutos = 0;
-    String mili="", seg="", min="";
+    private String mili="", seg="", min="";
     private boolean isPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jugar);
+
+        Thread cronos;
+        Handler h = new Handler();
 
         tinyDB = new TinyDB(this);
 
@@ -57,67 +57,77 @@ public class Jugar extends AppCompatActivity {
         frase = (Frase) intent.getSerializableExtra("fraseJugar");
         fraseText.setText(frase.getFrase());
 
-        crono = new Thread(new Runnable() {
+        cronos = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true){
-                    if (isPlaying){
-                        try {
-                            Thread.sleep(1);
-                        } catch (InterruptedException e){
-                            e.printStackTrace();
-                        }
-                        milisegundos++;
-                        if (milisegundos == 599){
-                            segundos++;
-                            milisegundos = 0;
-                        }
+                try {
+                    while (true){
+                        Thread.sleep(1);
+                        if (isPlaying){
 
-                        if (segundos == 59){
-                            minutos++;
-                            segundos = 0;
-                        }
+                            milisegundos++;
 
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (milisegundos < 10){
-                                    mili = "00"+milisegundos;
-                                }
-                                else if (milisegundos < 100){
-                                    mili = "0"+milisegundos;
-                                }
-                                else {
-                                    mili = ""+milisegundos;
-                                }
-
-                                if (segundos < 10){
-                                    seg = "0"+segundos;
-                                }
-                                else {
-                                    seg = ""+segundos;
-                                }
-
-                                if (minutos < 10){
-                                    min = "0"+minutos;
-                                }
-                                else {
-                                    min = ""+minutos;
-                                }
-                                cronometro.setText(min+":"+seg+","+mili);
+                            if (milisegundos == 999){
+                                segundos++;
+                                milisegundos = 0;
                             }
-                        });
+                            if (segundos == 59){
+                                minutos++;
+                                segundos = 0;
+                            }
+
+                            if (milisegundos < 10){
+                                mili = "00"+milisegundos;
+                            } else if (milisegundos < 100){
+                                mili = "0"+milisegundos;
+                            } else {
+                                mili = ""+milisegundos;
+                            }
+
+                            if (segundos < 10){
+                                seg = "0"+segundos;
+                            } else {
+                                seg = ""+segundos;
+                            }
+
+                            if (minutos < 10){
+                                min = "0"+minutos;
+                            } else {
+                                min = ""+minutos;
+                            }
+
+                            try {
+
+                                h.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        String tiempo = min + ":" + seg + "," + milisegundos;
+                                        cronometro.setText(tiempo);
+                                    }
+                                });
+                            } catch (Exception e){
+
+                            }
+                        }
+
+
                     }
+                } catch (InterruptedException e){
+                    e.printStackTrace();
                 }
             }
         });
-        crono.start();
+
+
 
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+
                 isPlaying = true;
+                cronos.start();
 
 
                 boton.setText("Acabar");
@@ -217,6 +227,7 @@ public class Jugar extends AppCompatActivity {
                 minutos = 0;
                 segundos = 0;
                 milisegundos = 0;
+                isPlaying = false;
 
                 //setText del cronometro reseteado
                 cronometro.setText("00:00,000");
@@ -290,5 +301,4 @@ public class Jugar extends AppCompatActivity {
 
         return puntos;
     }
-
 }
