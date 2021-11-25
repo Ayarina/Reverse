@@ -15,6 +15,11 @@
     <string name="frase">Frase</string>
     <string name="frase_usuario">Introduce aquí la frase al revés</string>
     <string name="boton_empezar">Empezar</string>
+    <string name="boton_volver">Volver</string>
+
+    <!---PopUpJugar-->
+    <string name="boton_reintentar">Volver a jugar</string>
+    <string name="boton_salir">Salir</string>
 
     <!---Nueva Frase-->
     <string name="newFrase">Introduce una frase</string>

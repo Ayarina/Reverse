@@ -1,77 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="350dp"
-    android:layout_height="250dp"
+    android:layout_width="340dp"
+    android:layout_height="315dp"
     android:layout_gravity="center"
     android:orientation="vertical"
     android:background="@drawable/fondo_jugar_popup">
 
+        <View
+            android:id="@+id/barra_vertical_1"
+            android:layout_width="wrap_content"
+            android:layout_height="3dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="50dp"
+            android:background="@color/teal_200"
+            />
+
         <TextView
             android:id="@+id/texto_resultados"
-            android:text="Resultados:"
-            android:textSize="40sp"
-            android:fontFamily="sans-serif-black"
+            android:text="Tus puntos:"
+            android:textColor="@color/teal_200"
+            android:textSize="25sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="70dp"
+            android:layout_marginStart="76dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="sans-serif-black"
             android:gravity="center"
+            android:layout_below="@id/barra_vertical_1"
             />
 
         <TextView
             android:id="@+id/puntuacion_popup"
-            android:text="200"
-            android:textSize="40sp"
+            android:text="0"
+            android:textSize="25sp"
+            android:textColor="@color/teal_200"
             android:fontFamily="sans-serif-black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="142dp"
-            android:layout_marginTop="10dp"
-            android:layout_below="@id/texto_resultados"
+            android:layout_marginStart="216dp"
+            android:layout_marginTop="5dp"
             android:gravity="center"
+            android:layout_below="@id/barra_vertical_1"
             />
+
+        <View
+            android:id="@+id/barra_vertical_2"
+            android:layout_width="wrap_content"
+            android:layout_height="3dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/teal_200"
+            android:layout_below="@id/puntuacion_popup"
+            />
+
+
 
         <TextView
             android:id="@+id/tiempo_popup"
             android:text="00:00,000"
-            android:textSize="40sp"
-            android:fontFamily="sans-serif-black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
             android:layout_marginTop="15dp"
-            android:layout_marginStart="85dp"
-            android:layout_below="@id/puntuacion_popup"
+            android:layout_marginRight="120dp"
+            android:layout_marginLeft="120dp"
+            android:background="@drawable/circulo"
             android:gravity="center"
-            />
+            android:layout_below="@+id/barra_vertical_2"
+             />
 
-        <LinearLayout
+        <Button
+            android:id="@+id/reintentar_popup"
+            android:text="@string/boton_reintentar"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/teal_200"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/tiempo_popup"
-            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:gravity="center"
+            android:layout_below="@id/tiempo_popup"
+             />
 
-            >
+        <Button
+            android:id="@+id/salir_popup"
+            android:text="@string/boton_salir"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/teal_200"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:gravity="center"
+            android:layout_below="@id/reintentar_popup"
+            />
 
-            <Button
-                android:id="@+id/reintentar_popup"
-                android:text="Volver a jugar"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:gravity="center"
-                />
-
-            <Button
-                android:id="@+id/salir_popup"
-                android:text="Salir"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:gravity="center"
-                />
-
-        </LinearLayout>
 
 </RelativeLayout>

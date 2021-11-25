@@ -1,5 +1,6 @@
 package com.example.reverse;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -7,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +25,7 @@ public class Jugar extends AppCompatActivity {
     private EditText fraseUsuario;
     private TextView cronometro;
     private Button boton;
+    private Button botonVolver;
 
     //PopuUp
 
@@ -47,6 +50,7 @@ public class Jugar extends AppCompatActivity {
         fraseUsuario = findViewById(R.id.usuario_frase);
         boton = findViewById(R.id.boton_jugar);
         cronometro = findViewById(R.id.cronometro);
+        botonVolver = findViewById(R.id.boton_volver);
 
         //Sacamos los datos del intent
         Intent intent = getIntent();
@@ -136,6 +140,17 @@ public class Jugar extends AppCompatActivity {
                         contactPopUp();
                     }
                 });
+            }
+        });
+
+        botonVolver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                isPlaying = false;
+
+                Intent intent = new Intent(Jugar.this, HomeFragment.class);
+                startActivity(intent);
             }
         });
     }
