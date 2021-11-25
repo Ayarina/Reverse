@@ -63,6 +63,12 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         return frases.size();
     }
 
+    //notifica del cambio para que se actualice
+    public void notifyInsertion(int position){
+        notifyItemInserted(position);
+
+    }
+
     /*
     public void removeAt(int position){
         //Notificamos al recycler
