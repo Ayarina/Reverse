@@ -2,18 +2,21 @@ package com.example.reverse;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.reverse.ui.home.HomeFragment;
 
@@ -29,11 +32,19 @@ public class Jugar extends AppCompatActivity{
     private long time;
 
     //PopuUp
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+    private TextView puntuacion;
+    private Chronometer tiempo;
+    private Button salir;
+    private Button reintentar;
 
     private ArrayList<Object> frases;
     private Frase frase;
     private TinyDB tinyDB;
 
+    private long PauseOffSet = 0;
+    private boolean isPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +58,6 @@ public class Jugar extends AppCompatActivity{
         boton = findViewById(R.id.boton_jugar);
         botonVolver = findViewById(R.id.boton_volver);
         cronometro = findViewById(R.id.cronometro);
-
-
 
         //Sacamos los datos del intent
         Intent intent = getIntent();
@@ -163,71 +172,23 @@ public class Jugar extends AppCompatActivity{
         });
 
         reintentar.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
                 //Reset del cronometro.
-                time = 0;
-                boton.setText("Empezar");
-
+                PauseOffSet = 0;
                 dialog.dismiss();
             }
         });
     }
 
-    private String conversorTiempo(){
+    private int puntuacionUsuario (EditText freseUsuario){
 
-        int minutos, segundos;
-
-        segundos = (int) ((time-time%1000)/1000)%60;
-        minutos = (int) ((((time-time%1000)/1000)-segundos)/60)%60;
-
-        return minutos+":"+segundos;
+        return 0;
     }
 
-    private int puntuacionUsuario (){
 
-        int puntos = frase.getPuntuacionMaxima();
-        int aux;
 
-        if (fraseUsuario.getText().toString().equals(frase.getFraseInvertida())){
 
-            return frase.getPuntuacionMaxima();
-        }
-        else if (fraseUsuario.length() == frase.getFraseInvertida().length()){
 
-            for (int i = 0; i < fraseUsuario.length(); i++){
 
-                if (fraseUsuario.toString().charAt(i) != frase.getFraseInvertida().charAt(i)){
-                    puntos -= 2;
-                }
-            }
-        }
-        else if (fraseUsuario.length() < frase.getFraseInvertida().length()){
-
-            for (aux = 0; aux < fraseUsuario.length(); aux++){
-
-                if (fraseUsuario.toString().charAt(aux) != frase.getFraseInvertida().charAt(aux)){
-                    puntos -= 2;
-                }
-            }
-
-            aux = frase.getFraseInvertida().length() - (aux + 1);
-            puntos -= (aux * 2);
-        }
-        else {
-
-            for (aux = 0; aux < frase.getFraseInvertida().length(); aux++){
-
-                if (fraseUsuario.toString().charAt(aux) != frase.getFraseInvertida().charAt(aux)){
-                    puntos -= 2;
-                }
-            }
-
-            aux = fraseUsuario.length() - (aux + 1);
-            puntos -= (aux * 2);
-        }
-
-        return puntos;
-    }
 }
