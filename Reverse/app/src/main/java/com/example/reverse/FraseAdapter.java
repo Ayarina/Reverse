@@ -44,7 +44,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         //Seteamos los datos del usuario añadido al crearse.
 
         holder.frase.setText(frase.getFrase());
-        //score --
+        holder.score.setText(String.valueOf(frase.getPuntuacion()));
         holder.tiempo.setBase(frase.getTiempo());
         //boton
         holder.jugar.setOnClickListener(new View.OnClickListener() {
