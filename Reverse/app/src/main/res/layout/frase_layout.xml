@@ -31,13 +31,13 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/frase"
                     android:text="Frase"
-                    android:textColor="@color/texto"
+                    android:textColor="@color/white"
                     />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
-                    android:background="#FFF1AF"/>
+                    android:background="@color/negro_notannegro"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Score"
-                        android:textColor="@color/texto"
+                        android:textColor="@color/white"
                         />
 
                     <Chronometer
@@ -57,7 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/footerTarjeta"
-                        android:textColor="@color/texto"
+                        android:textColor="@color/white"
                         />
 
                     <RelativeLayout
@@ -69,7 +69,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:backgroundTint="@color/black"
                             android:text="JUGAR" />
                     </RelativeLayout>
 
