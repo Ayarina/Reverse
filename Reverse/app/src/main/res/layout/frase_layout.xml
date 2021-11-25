@@ -32,7 +32,7 @@
                     android:textSize="@dimen/frase"
                     android:text="Frase"
                     android:textColor="@color/white"
-                    />
+                   /> <!-- app:autoSizeTextType="uniform" -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -64,12 +64,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
+
+                        <Button
+                            android:id="@+id/eliminar_tarjeta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ELIMINAR"
+                            android:layout_marginEnd="4dp"
+                            android:layout_toStartOf="@+id/jugar_tarjeta"/>
+
                         <Button
                             android:id="@+id/jugar_tarjeta"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="JUGAR"
                             android:layout_alignParentEnd="true"
-                            android:text="JUGAR" />
+                            />
+
                     </RelativeLayout>
 
 

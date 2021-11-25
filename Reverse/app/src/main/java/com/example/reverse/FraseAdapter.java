@@ -1,5 +1,6 @@
 package com.example.reverse;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         //Manejo de cada frase_layout individualmente, se podrá acceder a todos los campos definidos en
         //ViewHolder mediante el parametro holder. Con position se puede acceder a cada usuario
         //replace the contents of the view con el holder, que es basicamente la vista del frase_layout
@@ -54,6 +55,14 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
                 Intent intent = new Intent(v.getContext(), Jugar.class);
                 intent.putExtra("fraseJugar", frase);
                 v.getContext().startActivity(intent);
+            }
+        });
+
+        holder.eliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //enviar a la actividad jugar
+                removeAt(position);
             }
         });
 
@@ -87,7 +96,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         //private Type Elementos del layout;
         private TextView frase, score;
         private Chronometer tiempo; //frase_tarjeta
-        private Button jugar;
+        private Button jugar, eliminar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,6 +106,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
             score = itemView.findViewById(R.id.score_tarjeta);
             tiempo = itemView.findViewById(R.id.tiempo_tarjeta);
             jugar = itemView.findViewById(R.id.jugar_tarjeta);
+            eliminar = itemView.findViewById(R.id.eliminar_tarjeta);
         }
     }
 
