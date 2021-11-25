@@ -42,7 +42,7 @@
 
 
 
-    <TextView
+    <Chronometer
         android:id="@+id/cronometro"
         android:text="00:00,000"
         android:textColor="@color/black"
@@ -51,8 +51,8 @@
         android:layout_height="100dp"
         android:layout_below="@+id/frase"
         android:layout_marginTop="55dp"
-        android:layout_marginLeft="150dp"
-        android:layout_marginRight="150dp"
+        android:layout_marginLeft="155dp"
+        android:layout_marginRight="155dp"
         android:background="@drawable/circulo"
         android:gravity="center"
         />

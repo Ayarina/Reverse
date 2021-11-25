@@ -7,8 +7,10 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,9 +23,10 @@ public class Jugar extends AppCompatActivity{
 
     private TextView fraseText;
     private EditText fraseUsuario;
-    private TextView cronometro;
     private Button boton;
     private Button botonVolver;
+    private Chronometer cronometro;
+    private long time;
 
     //PopuUp
 
@@ -32,121 +35,64 @@ public class Jugar extends AppCompatActivity{
     private TinyDB tinyDB;
 
 
-    private int milisegundos = 0, segundos = 0, minutos = 0;
-    private String mili="", seg="", min="";
-    private boolean isPlaying = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jugar);
-
-        Thread cronos;
-        Handler h = new Handler();
 
         tinyDB = new TinyDB(this);
 
         fraseText = findViewById(R.id.frase);
         fraseUsuario = findViewById(R.id.usuario_frase);
         boton = findViewById(R.id.boton_jugar);
-        cronometro = findViewById(R.id.cronometro);
         botonVolver = findViewById(R.id.boton_volver);
+        cronometro = findViewById(R.id.cronometro);
+
+
 
         //Sacamos los datos del intent
         Intent intent = getIntent();
         frase = (Frase) intent.getSerializableExtra("fraseJugar");
         fraseText.setText(frase.getFrase());
 
-        cronos = new Thread(new Runnable() {
+        cronometro.setBase(SystemClock.elapsedRealtime());
+        cronometro.setFormat("MM:SS");
+        cronometro.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
-            public void run() {
-                try {
-                    while (true){
-                        Thread.sleep(1);
-                        if (isPlaying){
+            public void onChronometerTick(Chronometer chronometer) {
 
-                            milisegundos++;
-
-                            if (milisegundos == 999){
-                                segundos++;
-                                milisegundos = 0;
-                            }
-                            if (segundos == 59){
-                                minutos++;
-                                segundos = 0;
-                            }
-
-                            if (milisegundos < 10){
-                                mili = "00"+milisegundos;
-                            } else if (milisegundos < 100){
-                                mili = "0"+milisegundos;
-                            } else {
-                                mili = ""+milisegundos;
-                            }
-
-                            if (segundos < 10){
-                                seg = "0"+segundos;
-                            } else {
-                                seg = ""+segundos;
-                            }
-
-                            if (minutos < 10){
-                                min = "0"+minutos;
-                            } else {
-                                min = ""+minutos;
-                            }
-
-                            try {
-
-                                h.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-
-                                        String tiempo = min + ":" + seg + "," + milisegundos;
-                                        cronometro.setText(tiempo);
-                                    }
-                                });
-                            } catch (Exception e){
-
-                            }
-                        }
-
-
-                    }
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
-        });
-
-
-
-        boton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                isPlaying = true;
-                cronos.start();
-
-
-                boton.setText("Acabar");
-
-                //Si el usuario se pasa de este tiempo, inmediatamente será enviado al HomeFragment.
-                if (minutos == 59 && segundos == 59 && milisegundos == 999){
-                    isPlaying = false;
-
+                if (SystemClock.elapsedRealtime() - cronometro.getBase() >= 600000){
+                    cronometro.setBase(SystemClock.elapsedRealtime());
                     //Toast aqui para informar al usuario
                     Toast.makeText(Jugar.this, "El tiempo ha superado el permitido", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(Jugar.this, HomeFragment.class);
                     startActivity(intent);
                 }
+            }
+        });
+
+        boton.setText("Empezar");
+
+        boton.setEnabled(true);
+        botonVolver.setEnabled(true);
+
+        boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                cronometro.start();
+
+                boton.setText("Acabar");
 
                 boton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        isPlaying = false;
+                        cronometro.stop();
+                        time = SystemClock.elapsedRealtime() - cronometro.getBase();
+                        boton.setEnabled(false);
+                        botonVolver.setEnabled(false);
                         contactPopUp();
                     }
                 });
@@ -156,8 +102,6 @@ public class Jugar extends AppCompatActivity{
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                isPlaying = false;
 
                 Intent intent = new Intent(Jugar.this, HomeFragment.class);
                 startActivity(intent);
@@ -182,7 +126,7 @@ public class Jugar extends AppCompatActivity{
         reintentar = findViewById(R.id.reintentar_popup);
         salir = findViewById(R.id.salir_popup);
         puntuacion.setText(puntuacionUsuario());
-        tiempo.setText(min+":"+seg+","+mili);
+        tiempo.setText(conversorTiempo());
 
         dialogBuilder = new AlertDialog.Builder(this);
         final View contactPopUp = getLayoutInflater().inflate(R.layout.popup_jugar, null);
@@ -194,19 +138,18 @@ public class Jugar extends AppCompatActivity{
         salir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                long tmp = convertirAMilisegundos();
 
                 //Asignación de la puntuacion y tiempo a la frase (Se prioriza una puntuacion alta al tiempo)
                 if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
 
                     frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
-                    frase.setTiempo(tmp);
+                    frase.setTiempo(time);
                     frases.add(frase);
                     tinyDB.putListObject("frases", frases);
 
-                } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion())&& (tmp < frase.getTiempo())){
+                } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()) && (time < frase.getTiempo())){
 
-                    frase.setTiempo(tmp);
+                    frase.setTiempo(time);
                     frases.add(frase);
                     tinyDB.putListObject("frases", frases);
                 }
@@ -224,14 +167,7 @@ public class Jugar extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 //Reset del cronometro.
-                minutos = 0;
-                segundos = 0;
-                milisegundos = 0;
-                isPlaying = false;
-
-                //setText del cronometro reseteado
-                cronometro.setText("00:00,000");
-
+                time = 0;
                 boton.setText("Empezar");
 
                 dialog.dismiss();
@@ -239,22 +175,15 @@ public class Jugar extends AppCompatActivity{
         });
     }
 
-    private long convertirAMilisegundos (){
-        return ((minutos * 1000L)*60)+(segundos * 1000L)+milisegundos;
-    }
-/*
     private String conversorTiempo(){
 
-        int minutos, segundos, milisegundos;
+        int minutos, segundos;
 
-        milisegundos = (int) frase.getTiempo()%1000;
-        segundos = (int) ((frase.getTiempo()-milisegundos)/1000)%60;
-        minutos = (int) ((((frase.getTiempo()-milisegundos)/1000)-segundos)/60)%60;
+        segundos = (int) ((time-time%1000)/1000)%60;
+        minutos = (int) ((((time-time%1000)/1000)-segundos)/60)%60;
 
-        return minutos+":"+segundos+","+milisegundos;
+        return minutos+":"+segundos;
     }
-
- */
 
     private int puntuacionUsuario (){
 
