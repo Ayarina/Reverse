@@ -64,7 +64,15 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         return frases.size();
     }
 
-    /*
+    //notifica del cambio para que se actualice
+    public void notifyInsertion(int position){
+        notifyItemInserted(position);
+        notifyItemChanged(position, frases.size());
+        notifyItemRangeChanged(position, frases.size());
+        notifyDataSetChanged();
+    }
+
+
     public void removeAt(int position){
         //Notificamos al recycler
         frases.remove(position);
@@ -72,7 +80,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         notifyItemChanged(position, frases.size());
         notifyItemRangeChanged(position, frases.size());
         tinyDB.putListObject("FrasesData", frases);
-    }*/
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         //Comunicacion directa con frase_layout

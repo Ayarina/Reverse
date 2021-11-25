@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TinyDB tinyDB;
     private ArrayList<Object> frases;
+    private FraseAdapter fraseAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         else
             frases = new ArrayList<>();
 
+        //Inicializamos el adaptador
+        fraseAdapter = new FraseAdapter(frases);
 
         fab_plus = findViewById(R.id.fab);
 
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                                 Frase frase = new Frase(et_popup.getText().toString());
                                 frases.add(frase);
                                 tinyDB.putListObject("frases", frases);
+                                fraseAdapter.notifyInsertion(frases.size()-1);
                             }
                         });
 

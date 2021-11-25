@@ -1,6 +1,7 @@
 package com.example.reverse.ui.home;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.example.reverse.TinyDB;
 import com.example.reverse.Usuario;
 import com.example.reverse.databinding.FragmentHomeBinding;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout ;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
@@ -33,6 +35,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<Object> frases;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -57,6 +60,16 @@ public class HomeFragment extends Fragment {
         recyclerView = (RecyclerView) root.findViewById(R.id.contact_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(fraseAdapter);
+
+        //Configuración del SwipeRefreshLayout
+        swipeRefreshLayout = (SwipeRefreshLayout) root.findViewById( R.id.swiperefreshlayout ) ;
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {@Override
+        public void onRefresh() {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        });
 
         return root;
     }
