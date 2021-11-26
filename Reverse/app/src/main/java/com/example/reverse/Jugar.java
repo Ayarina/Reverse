@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -115,22 +116,19 @@ public class Jugar extends AppCompatActivity{
 
         AlertDialog alertDialog;
         AlertDialog.Builder dialogBuilder;
-        TextView puntuacion;
-        TextView tiempo;
-        Button salir;
-        Button reintentar;
 
-        puntuacion = findViewById(R.id.puntuacion_popup);
-        tiempo = findViewById(R.id.tiempo_popup);
-        reintentar = findViewById(R.id.reintentar_popup);
-        salir = findViewById(R.id.salir_popup);
+        dialogBuilder = new AlertDialog.Builder(this);
+        View popup = getLayoutInflater().inflate(R.layout.popup_jugar, null);
+
+        TextView puntuacion = findViewById(R.id.puntuacion_popup);
+        TextView tiempo = findViewById(R.id.tiempo_popup);
+        Button reintentar = findViewById(R.id.reintentar_popup);
+        Button salir = findViewById(R.id.salir_popup);
         puntuacion.setText(puntuacionUsuario());
         tiempo.setText(conversorTiempo());
 
-        dialogBuilder = new AlertDialog.Builder(this);
-        //final View popup = getLayoutInflater().inflate(R.layout.popup_jugar, null);
+        dialogBuilder.setView(popup);
 
-        //dialogBuilder.setView(popup);
         alertDialog = dialogBuilder.create();
         alertDialog.show();
 
