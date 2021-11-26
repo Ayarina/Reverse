@@ -179,7 +179,15 @@ public class Jugar extends AppCompatActivity{
         segundos = (int) ((time-time%1000)/1000)%60;
         minutos = (int) ((((time-time%1000)/1000)-segundos)/60)%60;
 
-        return minutos+":"+segundos;
+        if (minutos < 10 && segundos < 10){
+            return "0"+minutos+":0"+segundos;
+        } else if (minutos < 10){
+            return "0" + minutos + ":" + segundos;
+        } else if (segundos < 10){
+            return minutos+":0"+segundos;
+        } else{
+            return minutos+":"+segundos;
+        }
     }
 
     private int puntuacionUsuario (){
