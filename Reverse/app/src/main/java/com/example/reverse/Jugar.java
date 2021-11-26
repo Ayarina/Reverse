@@ -1,6 +1,8 @@
 package com.example.reverse;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -15,8 +17,6 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.reverse.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 
@@ -34,6 +34,9 @@ public class Jugar extends AppCompatActivity{
     private Frase frase;
     private TinyDB tinyDB;
 
+    private FraseAdapter fraseAdapter;
+    private RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,14 @@ public class Jugar extends AppCompatActivity{
         setContentView(R.layout.activity_jugar);
 
         tinyDB = new TinyDB(this);
+        //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
+        if(tinyDB.getListObject("frases", Frase.class) != null)
+            frases = tinyDB.getListObject("frases", Frase.class);
+        else
+            frases = new ArrayList<>();
+
+        //Inicializamos el adaptador
+        fraseAdapter = new FraseAdapter(frases);
 
 
         fraseText = findViewById(R.id.frase);
@@ -49,8 +60,6 @@ public class Jugar extends AppCompatActivity{
         botonTerminar = findViewById(R.id.boton_terminar);
         botonVolver = findViewById(R.id.boton_volver);
         cronometro = findViewById(R.id.cronometro);
-
-
 
         //Sacamos los datos del intent
         Intent intent = getIntent();
@@ -66,7 +75,8 @@ public class Jugar extends AppCompatActivity{
         botonEmpezar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                botonEmpezar.setEnabled(false);
+                botonTerminar.setEnabled(true);
                 cronometro.setBase(SystemClock.elapsedRealtime());
 
                 cronometro.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -78,7 +88,7 @@ public class Jugar extends AppCompatActivity{
                             //Toast aqui para informar al usuario
                             Toast.makeText(Jugar.this, "El tiempo ha superado el permitido", Toast.LENGTH_SHORT).show();
 
-                            Intent intent = new Intent(Jugar.this, HomeFragment.class);
+                            Intent intent = new Intent(Jugar.this, MainActivity.class);
                             startActivity(intent);
                         }
                     }
@@ -106,11 +116,12 @@ public class Jugar extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(Jugar.this, HomeFragment.class);
+                Intent intent = new Intent(Jugar.this, MainActivity.class);
                 startActivity(intent);
             }
         });
     }
+
 
     private void contactPopUp(){
 
@@ -120,11 +131,11 @@ public class Jugar extends AppCompatActivity{
         dialogBuilder = new AlertDialog.Builder(this);
         View popup = getLayoutInflater().inflate(R.layout.popup_jugar, null);
 
-        TextView puntuacion = findViewById(R.id.puntuacion_popup);
-        TextView tiempo = findViewById(R.id.tiempo_popup);
-        Button reintentar = findViewById(R.id.reintentar_popup);
-        Button salir = findViewById(R.id.salir_popup);
-        puntuacion.setText(puntuacionUsuario());
+        TextView puntuacion = popup.findViewById(R.id.puntuacion_popup);
+        TextView tiempo = popup.findViewById(R.id.tiempo_popup);
+        Button reintentar = popup.findViewById(R.id.reintentar_popup);
+        Button salir = popup.findViewById(R.id.salir_popup);
+        puntuacion.setText(String.valueOf(puntuacionUsuario()));
         tiempo.setText(conversorTiempo());
 
         dialogBuilder.setView(popup);
@@ -136,22 +147,32 @@ public class Jugar extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
+                frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
+                frase.setTiempo(time);
+                fraseAdapter.notifyUpdate(frases.indexOf(frase));
+                tinyDB.putListObject("frases", frases);
+
                 //Asignación de la puntuacion y tiempo a la frase (Se prioriza una puntuacion alta al tiempo)
                 if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
-
                     frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
                     frase.setTiempo(time);
-                    frases.add(frase);
+                    fraseAdapter.notifyUpdate(frases.indexOf(frase));
                     tinyDB.putListObject("frases", frases);
 
                 } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()) && (time < frase.getTiempo())){
 
                     frase.setTiempo(time);
-                    frases.add(frase);
+                    fraseAdapter.notifyUpdate(frases.indexOf(frase));
+                    tinyDB.putListObject("frases", frases);
+                }
+                else{
+                    frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
+                    frase.setTiempo(time);
+                    fraseAdapter.notifyUpdate(frases.indexOf(frase));
                     tinyDB.putListObject("frases", frases);
                 }
 
-                Intent intent = new Intent(Jugar.this, HomeFragment.class);
+                Intent intent = new Intent(Jugar.this, MainActivity.class);
                 startActivity(intent);
 
                 alertDialog.dismiss();
@@ -163,6 +184,9 @@ public class Jugar extends AppCompatActivity{
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
+                botonEmpezar.setEnabled(true);
+                botonTerminar.setEnabled(false);
+                fraseUsuario.setText("");
                 //Reset del cronometro.
                 cronometro.setBase(SystemClock.elapsedRealtime());
                 time = 0;

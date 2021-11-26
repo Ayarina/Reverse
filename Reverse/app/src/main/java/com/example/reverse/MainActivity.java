@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.widget.EditText;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Object> frases;
 
     private FraseAdapter fraseAdapter;
-
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,11 @@ public class MainActivity extends AppCompatActivity {
 
         //Inicializamos el adaptador
         fraseAdapter = new FraseAdapter(frases);
+
+        //Configuramos el RecyclerView con el UserAdapter como su controlador
+        recyclerView = (RecyclerView) findViewById(R.id.contact_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(fraseAdapter);
 
         fab_plus = findViewById(R.id.fab);
 
