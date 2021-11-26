@@ -114,11 +114,12 @@ public class Jugar extends AppCompatActivity{
 
     private void contactPopUp(){
 
-        AlertDialog alertDialog;
         AlertDialog.Builder dialogBuilder;
 
         dialogBuilder = new AlertDialog.Builder(this);
         View popup = getLayoutInflater().inflate(R.layout.popup_jugar, null);
+
+        AlertDialog alertDialog = dialogBuilder.create();
 
         TextView puntuacion = findViewById(R.id.puntuacion_popup);
         TextView tiempo = findViewById(R.id.tiempo_popup);
@@ -126,11 +127,6 @@ public class Jugar extends AppCompatActivity{
         Button salir = findViewById(R.id.salir_popup);
         puntuacion.setText(puntuacionUsuario());
         tiempo.setText(conversorTiempo());
-
-        dialogBuilder.setView(popup);
-
-        alertDialog = dialogBuilder.create();
-        alertDialog.show();
 
         salir.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,6 +166,9 @@ public class Jugar extends AppCompatActivity{
                 alertDialog.dismiss();
             }
         });
+
+        dialogBuilder.setView(popup);
+        alertDialog.show();
 
     }
 
