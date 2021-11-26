@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.widget.EditText;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private TinyDB tinyDB;
     private ArrayList<Object> frases;
 
+    private FraseAdapter fraseAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +49,11 @@ public class MainActivity extends AppCompatActivity {
         else
             frases = new ArrayList<>();
 
+        //Inicializamos el adaptador
+        fraseAdapter = new FraseAdapter(frases);
 
         fab_plus = findViewById(R.id.fab);
+
         fab_plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                                 Frase frase = new Frase(et_popup.getText().toString());
                                 frases.add(frase);
                                 tinyDB.putListObject("frases", frases);
+                                fraseAdapter.notifyInsertion(frases.size()-1);
                             }
                         });
 
@@ -71,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
@@ -80,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        //NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 

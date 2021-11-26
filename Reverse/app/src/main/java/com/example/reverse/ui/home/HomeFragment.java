@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
             frases = tinyDB.getListObject("frases", Frase.class);
         else
             frases = new ArrayList<>();
-        
+
         //Inicializamos el adaptador
         fraseAdapter = new FraseAdapter(frases);
 

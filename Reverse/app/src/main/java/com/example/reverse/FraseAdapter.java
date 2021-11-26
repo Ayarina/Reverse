@@ -44,7 +44,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
 
         holder.frase.setText(frase.getFrase());
         //score --
-        holder.tiempo.setText(0);
+        holder.tiempo.setText(formatoTiempo(frase));
         //boton
         holder.jugar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +61,12 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
     @Override
     public int getItemCount() { //num de frases agregadas
         return frases.size();
+    }
+
+    //notifica del cambio para que se actualice
+    public void notifyInsertion(int position){
+        notifyItemInserted(position);
+
     }
 
     /*
@@ -87,6 +93,24 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
             score = itemView.findViewById(R.id.score_tarjeta);
             tiempo = itemView.findViewById(R.id.tiempo_tarjeta);
             jugar = itemView.findViewById(R.id.jugar_tarjeta);
+        }
+    }
+
+    private String formatoTiempo(Frase frase){
+
+        int minutos, segundos;
+
+        segundos = (int) ((frase.getTiempo()-frase.getTiempo()%1000)/1000)%60;
+        minutos = (int) ((((frase.getTiempo()-frase.getTiempo()%1000)/1000)-segundos)/60)%60;
+
+        if (minutos < 10 && segundos < 10){
+            return "0"+minutos+":0"+segundos;
+        } else if (minutos < 10){
+            return  "0"+minutos+":"+segundos;
+        } else if (segundos < 10){
+            return minutos+":0"+segundos;
+        } else {
+            return minutos+":"+segundos;
         }
     }
 
