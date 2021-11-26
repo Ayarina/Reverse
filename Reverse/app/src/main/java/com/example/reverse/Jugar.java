@@ -123,7 +123,7 @@ public class Jugar extends AppCompatActivity{
 
 
     private void contactPopUp(){
-
+        
         AlertDialog alertDialog;
         AlertDialog.Builder dialogBuilder;
 
@@ -148,6 +148,7 @@ public class Jugar extends AppCompatActivity{
 
                 //Asignación de la puntuacion y tiempo a la frase (Se prioriza una puntuacion alta al tiempo)
                 if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
+
                     frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
                     frase.setTiempo(time);
 
@@ -189,6 +190,9 @@ public class Jugar extends AppCompatActivity{
             }
         });
 
+        dialogBuilder.setView(popup);
+        alertDialog.show();
+
     }
 
     private String conversorTiempo(){
@@ -198,7 +202,15 @@ public class Jugar extends AppCompatActivity{
         segundos = (int) ((time-time%1000)/1000)%60;
         minutos = (int) ((((time-time%1000)/1000)-segundos)/60)%60;
 
-        return minutos+":"+segundos;
+        if (minutos < 10 && segundos < 10){
+            return "0"+minutos+":0"+segundos;
+        } else if (minutos < 10){
+            return "0" + minutos + ":" + segundos;
+        } else if (segundos < 10){
+            return minutos+":0"+segundos;
+        } else{
+            return minutos+":"+segundos;
+        }
     }
 
     private int puntuacionUsuario (){

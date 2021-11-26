@@ -12,8 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.reverse.ui.home.HomeFragment;
-
 import java.util.ArrayList;
 
 //Comunicación entre fragments y el recyclerview
@@ -46,6 +44,8 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
 
         holder.frase.setText(frase.getFrase());
         holder.score.setText(String.valueOf(frase.getPuntuacion()));
+        //holder.tiempo.setBase(frase.getTiempo());
+        //score --
         holder.tiempo.setText(formatoTiempo(frase));
         //boton
         holder.jugar.setOnClickListener(new View.OnClickListener() {
