@@ -10,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.reverse.ui.home.HomeFragment;
-
 import java.util.ArrayList;
 
 //Comunicación entre fragments y el recyclerview
@@ -43,6 +41,8 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         //Seteamos los datos del usuario añadido al crearse.
 
         holder.frase.setText(frase.getFrase());
+        holder.score.setText(String.valueOf(frase.getPuntuacion()));
+        //holder.tiempo.setBase(frase.getTiempo());
         //score --
         holder.tiempo.setText(formatoTiempo(frase));
         //boton
@@ -64,12 +64,13 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
     }
 
     //notifica del cambio para que se actualice
-    public void notifyInsertion(int position){
+    /*public void notifyInsertion(int position){
         notifyItemInserted(position);
-
     }
 
-    /*
+     */
+
+
     public void removeAt(int position){
         //Notificamos al recycler
         frases.remove(position);
@@ -77,13 +78,13 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         notifyItemChanged(position, frases.size());
         notifyItemRangeChanged(position, frases.size());
         tinyDB.putListObject("FrasesData", frases);
-    }*/
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         //Comunicacion directa con frase_layout
         //private Type Elementos del layout;
+        private Button jugar, eliminar;
         private TextView frase, score, tiempo; //frase_tarjeta
-        private Button jugar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

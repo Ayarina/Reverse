@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TinyDB tinyDB;
     private ArrayList<Object> frases;
+    private FraseAdapter fraseAdapter;
 
     private FraseAdapter fraseAdapter;
 

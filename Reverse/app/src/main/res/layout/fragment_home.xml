@@ -6,16 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/contact_recycler_view"
+    <!-- Simple Swipe Refresh Layout -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id = "@+id/swiperefreshlayout"
+        android:layout_width = "match_parent"
+        android:layout_height = "match_parent">
+
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+            android:layout_height="wrap_content">
 
-    </RelativeLayout>
-    
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/contact_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+
+        </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </LinearLayout>

@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="cardView">#B4C6A6</color>
     <color name="texto">#FFFFFFFF</color>
+    <color name="gris_oscuro">#606060</color>
+    <color name="negro_notannegro">#363636</color>
+    <color name="gris_clarooscuro">#8d8d8d</color>
 </resources>
