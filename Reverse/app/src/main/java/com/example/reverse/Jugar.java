@@ -53,7 +53,6 @@ public class Jugar extends AppCompatActivity{
         //Inicializamos el adaptador
         fraseAdapter = new FraseAdapter(frases);
 
-
         fraseText = findViewById(R.id.frase);
         fraseUsuario = findViewById(R.id.usuario_frase);
         botonEmpezar = findViewById(R.id.boton_jugar);
@@ -147,30 +146,25 @@ public class Jugar extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
-                frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
-                frase.setTiempo(time);
-                fraseAdapter.notifyUpdate(frases.indexOf(frase));
-                tinyDB.putListObject("frases", frases);
-
                 //Asignación de la puntuacion y tiempo a la frase (Se prioriza una puntuacion alta al tiempo)
                 if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
                     frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
                     frase.setTiempo(time);
-                    fraseAdapter.notifyUpdate(frases.indexOf(frase));
-                    tinyDB.putListObject("frases", frases);
 
                 } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()) && (time < frase.getTiempo())){
 
                     frase.setTiempo(time);
-                    fraseAdapter.notifyUpdate(frases.indexOf(frase));
-                    tinyDB.putListObject("frases", frases);
+
                 }
                 else{
                     frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
                     frase.setTiempo(time);
-                    fraseAdapter.notifyUpdate(frases.indexOf(frase));
-                    tinyDB.putListObject("frases", frases);
+
                 }
+
+                frases.add(frases.indexOf(frase), frase);
+                fraseAdapter.notifyUpdate(frases.indexOf(frase));
+                tinyDB.putListObject("frases", frases);
 
                 Intent intent = new Intent(Jugar.this, MainActivity.class);
                 startActivity(intent);

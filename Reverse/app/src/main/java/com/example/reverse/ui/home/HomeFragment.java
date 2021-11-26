@@ -22,7 +22,7 @@ import com.example.reverse.TinyDB;
 import com.example.reverse.Usuario;
 import com.example.reverse.databinding.FragmentHomeBinding;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout ;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
