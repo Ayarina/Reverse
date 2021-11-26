@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TinyDB tinyDB;
     private ArrayList<Object> frases;
-
     private FraseAdapter fraseAdapter;
+
     private RecyclerView recyclerView;
 
     @Override
@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
         fab_plus = findViewById(R.id.fab);
 
-        fab_plus.setOnClickListener(new View.OnClickListener() {
+        setSupportActionBar(binding.appBarMain.toolbar);
+        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        //NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
