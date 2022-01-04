@@ -45,8 +45,8 @@ public class Jugar extends AppCompatActivity{
 
         tinyDB = new TinyDB(this);
         //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
-        if(tinyDB.getListObject("frases", Frase.class) != null)
-            frases = tinyDB.getListObject("frases", Frase.class);
+        if(tinyDB.getListObject("FrasesData", Frase.class) != null)
+            frases = tinyDB.getListObject("FrasesData", Frase.class);
         else
             frases = new ArrayList<>();
 
@@ -165,7 +165,7 @@ public class Jugar extends AppCompatActivity{
 
                 frases.add(frases.indexOf(frase), frase);
                 fraseAdapter.notifyUpdate(frases.indexOf(frase));
-                tinyDB.putListObject("frases", frases);
+                tinyDB.putListObject("FrasesData", frases);
 
                 Intent intent = new Intent(Jugar.this, MainActivity.class);
                 startActivity(intent);

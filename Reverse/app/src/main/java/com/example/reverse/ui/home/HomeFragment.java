@@ -48,8 +48,8 @@ public class HomeFragment extends Fragment {
         //Inicializamos la base de datos
         tinyDB = new TinyDB(getContext());
         //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
-        if(tinyDB.getListObject("frases", Frase.class) != null)
-            frases = tinyDB.getListObject("frases", Frase.class);
+        if(tinyDB.getListObject("FrasesData", Frase.class) != null)
+            frases = tinyDB.getListObject("FrasesData", Frase.class);
         else
             frases = new ArrayList<>();
 
