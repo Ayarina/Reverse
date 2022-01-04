@@ -96,8 +96,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
     }
 
     public void notifyUpdate(int position){
-        notifyItemChanged(position, frases.size());
-        notifyItemRangeChanged(position, frases.size());
+        notifyItemChanged(position);
         notifyDataSetChanged();
     }
 

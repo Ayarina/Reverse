@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -88,9 +89,7 @@ public class Jugar extends AppCompatActivity{
                             cronometro.setBase(SystemClock.elapsedRealtime());
                             //Toast aqui para informar al usuario
                             Toast.makeText(Jugar.this, "El tiempo ha superado el permitido", Toast.LENGTH_SHORT).show();
-
-                            Intent intent = new Intent(Jugar.this, MainActivity.class);
-                            startActivity(intent);
+                            finish();
                         }
                     }
                 });
@@ -149,7 +148,7 @@ public class Jugar extends AppCompatActivity{
                 //Asignación de la puntuacion y tiempo a la frase (Se prioriza una puntuacion alta al tiempo)
                 if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
 
-                    frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
+                    //frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
                     frase.setTiempo(time);
 
                 } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()) && (time < frase.getTiempo())){

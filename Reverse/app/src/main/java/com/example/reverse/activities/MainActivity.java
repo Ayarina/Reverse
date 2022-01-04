@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                                 frases.add(frase);
                                 tinyDB.putListObject("FrasesData", frases);
                                 fraseAdapter.notifyInsertion(frases.size()-1);
-                                fraseAdapter.notifyDataSetChanged();
                             }
                         });
 
