@@ -25,5 +25,9 @@
     <string name="newFrase">Introduce una frase</string>
     <string name="popupTitle">Nueva frase</string>
     <string name="popupOK">OK</string>
+    <string name="logIn">LogIn</string>
+    <string name="correo">Correo</string>
+    <string name="contrase_a">Contraseña</string>
+    <string name="register">Register</string>
 
 </resources>
