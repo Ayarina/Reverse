@@ -1,4 +1,4 @@
-package com.example.reverse;
+package com.example.reverse.models;
 
 import java.io.Serializable;
 

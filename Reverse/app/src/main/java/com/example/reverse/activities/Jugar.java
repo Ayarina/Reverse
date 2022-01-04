@@ -1,13 +1,10 @@
-package com.example.reverse;
+package com.example.reverse.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -17,6 +14,11 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.reverse.models.Frase;
+import com.example.reverse.adapter.FraseAdapter;
+import com.example.reverse.R;
+import com.example.reverse.models.TinyDB;
 
 import java.util.ArrayList;
 
@@ -114,9 +116,7 @@ public class Jugar extends AppCompatActivity{
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent intent = new Intent(Jugar.this, MainActivity.class);
-                startActivity(intent);
+               finish();
             }
         });
     }
@@ -167,9 +167,7 @@ public class Jugar extends AppCompatActivity{
                 fraseAdapter.notifyUpdate(frases.indexOf(frase));
                 tinyDB.putListObject("FrasesData", frases);
 
-                Intent intent = new Intent(Jugar.this, MainActivity.class);
-                startActivity(intent);
-
+                finish();
                 alertDialog.dismiss();
 
             }

@@ -1,4 +1,4 @@
-package com.example.reverse;
+package com.example.reverse.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -9,8 +9,11 @@ import android.widget.EditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reverse.models.Frase;
+import com.example.reverse.adapter.FraseAdapter;
+import com.example.reverse.R;
+import com.example.reverse.models.TinyDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.appcompat.app.AlertDialog;

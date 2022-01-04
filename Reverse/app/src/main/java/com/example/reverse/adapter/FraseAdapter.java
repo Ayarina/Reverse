@@ -1,4 +1,4 @@
-package com.example.reverse;
+package com.example.reverse.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -6,11 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.reverse.models.Frase;
+import com.example.reverse.R;
+import com.example.reverse.models.TinyDB;
+import com.example.reverse.activities.Jugar;
 
 import java.util.ArrayList;
 
@@ -91,6 +95,12 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         tinyDB.putListObject("FrasesData", frases);
     }
 
+    public void notifyUpdate(int position){
+        notifyItemChanged(position, frases.size());
+        notifyItemRangeChanged(position, frases.size());
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         //Comunicacion directa con frase_layout
         //private Type Elementos del layout;
@@ -128,11 +138,6 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
     }
 
 
-    void notifyUpdate(int position){
-        notifyItemChanged(position, frases.size());
-        notifyItemRangeChanged(position, frases.size());
-        notifyDataSetChanged();
-    }
 
 
 }
