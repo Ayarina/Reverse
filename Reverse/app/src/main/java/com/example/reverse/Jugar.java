@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class Jugar extends AppCompatActivity{
 
-    private TextView fraseText;
+    private TextView fraseText, puntuacion;
     private EditText fraseUsuario;
     private Button botonEmpezar;
     private Button botonTerminar;
@@ -49,6 +49,7 @@ public class Jugar extends AppCompatActivity{
         botonTerminar = findViewById(R.id.boton_terminar);
         botonVolver = findViewById(R.id.boton_volver);
         cronometro = findViewById(R.id.cronometro);
+        puntuacion = findViewById(R.id.puntuacion);
 
 
 
@@ -58,8 +59,10 @@ public class Jugar extends AppCompatActivity{
         fraseText.setText(frase.getFrase());
 
         botonTerminar.setVisibility(View.INVISIBLE);
+        botonTerminar.setEnabled(false);
 
         botonEmpezar.setEnabled(true);
+        botonTerminar.setVisibility(View.GONE);
         botonTerminar.setEnabled(false);
         botonVolver.setEnabled(true);
 
@@ -67,7 +70,9 @@ public class Jugar extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
+                fraseUsuario.setText("");
                 cronometro.setBase(SystemClock.elapsedRealtime());
+                time = 0;
 
                 cronometro.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
                     @Override
@@ -76,13 +81,17 @@ public class Jugar extends AppCompatActivity{
                         if (SystemClock.elapsedRealtime() - cronometro.getBase() >= 600000){
                             cronometro.setBase(SystemClock.elapsedRealtime());
                             //Toast aqui para informar al usuario
-                            Toast.makeText(Jugar.this, "El tiempo ha superado el permitido", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Jugar.this, "El tiempo ha superado el permitido, volviendo al inicio.", Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(Jugar.this, HomeFragment.class);
                             startActivity(intent);
                         }
                     }
                 });
+
+
+                botonEmpezar.setEnabled(false);
+                botonEmpezar.setVisibility(View.GONE);
 
                 cronometro.start();
                 botonTerminar.setVisibility(View.VISIBLE);
@@ -93,10 +102,35 @@ public class Jugar extends AppCompatActivity{
                     public void onClick(View v) {
                         cronometro.stop();
                         time = SystemClock.elapsedRealtime() - cronometro.getBase();
-                        botonEmpezar.setEnabled(false);
-                        botonVolver.setEnabled(false);
 
-                        contactPopUp();
+                        botonVolver.setEnabled(true);
+                        botonVolver.setVisibility(View.VISIBLE);
+
+                        botonEmpezar.setEnabled(true);
+                        botonEmpezar.setVisibility(View.VISIBLE);
+
+                        String mensaje = "Reintentar";
+                        botonEmpezar.setText(mensaje);
+
+                        puntuacion.setText(puntuacionUsuario());
+                        cronometro.setText(conversorTiempo());
+
+                        //Reset del cronometro.
+
+                        if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
+
+                            frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
+                            frase.setTiempo(time);
+                            frases.add(frase);
+                            tinyDB.putListObject("frases", frases);
+
+                        } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()) && (time < frase.getTiempo())){
+
+                            frase.setTiempo(time);
+                            frases.add(frase);
+                            tinyDB.putListObject("frases", frases);
+                        }
+
                     }
                 });
             }
@@ -110,66 +144,6 @@ public class Jugar extends AppCompatActivity{
                 startActivity(intent);
             }
         });
-    }
-
-    private void contactPopUp(){
-
-        AlertDialog.Builder dialogBuilder;
-
-        dialogBuilder = new AlertDialog.Builder(this);
-        View popup = getLayoutInflater().inflate(R.layout.popup_jugar, null);
-
-        AlertDialog alertDialog = dialogBuilder.create();
-
-        TextView puntuacion = findViewById(R.id.puntuacion_popup);
-        TextView tiempo = findViewById(R.id.tiempo_popup);
-        Button reintentar = findViewById(R.id.reintentar_popup);
-        Button salir = findViewById(R.id.salir_popup);
-        puntuacion.setText(puntuacionUsuario());
-        tiempo.setText(conversorTiempo());
-
-        salir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //Asignación de la puntuacion y tiempo a la frase (Se prioriza una puntuacion alta al tiempo)
-                if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
-
-                    frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
-                    frase.setTiempo(time);
-                    frases.add(frase);
-                    tinyDB.putListObject("frases", frases);
-
-                } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()) && (time < frase.getTiempo())){
-
-                    frase.setTiempo(time);
-                    frases.add(frase);
-                    tinyDB.putListObject("frases", frases);
-                }
-
-                Intent intent = new Intent(Jugar.this, HomeFragment.class);
-                startActivity(intent);
-
-                alertDialog.dismiss();
-
-            }
-        });
-
-        reintentar.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View v) {
-                //Reset del cronometro.
-                cronometro.setBase(SystemClock.elapsedRealtime());
-                time = 0;
-
-                alertDialog.dismiss();
-            }
-        });
-
-        dialogBuilder.setView(popup);
-        alertDialog.show();
-
     }
 
     private String conversorTiempo(){

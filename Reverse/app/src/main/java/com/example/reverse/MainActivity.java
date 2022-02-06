@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Object> frases;
     private FraseAdapter fraseAdapter;
 
-    private FraseAdapter fraseAdapter;
+
 
 
     @Override
@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
                                 Frase frase = new Frase(et_popup.getText().toString());
                                 frases.add(frase);
                                 tinyDB.putListObject("frases", frases);
-                                fraseAdapter.notifyInsertion(frases.size()-1);
                             }
                         });
 
