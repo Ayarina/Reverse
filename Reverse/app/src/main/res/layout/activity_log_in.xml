@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.LogInActivity"
+    >
+
+    <TextView
+        android:id="@+id/login_texto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/logIn"
+        android:textAlignment="center"
+        android:textSize="35sp"
+        android:textColor="@color/black"
+        />
+
+    <EditText
+        android:id="@+id/correo_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_texto"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/correo"
+        android:paddingTop="25dp"
+        android:textSize="20sp"
+        />
+
+    <EditText
+        android:id="@+id/contraseña_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/correo_login"
+        android:layout_alignStart="@id/correo_login"
+        android:layout_alignEnd="@id/correo_login"
+        android:hint="@string/contrase_a"
+        android:paddingTop="25dp"
+        android:textSize="20sp"
+        />
+
+    <Button
+        android:id="@+id/boton_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contraseña_login"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="15dp"
+        android:text="@string/logIn"
+        android:textSize="20sp"
+        />
+    <Button
+        android:id="@+id/boton_gotoregister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/boton_login"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="15dp"
+        android:text="@string/register"
+        android:textSize="15sp"
+        />
+
+
+
+</RelativeLayout>

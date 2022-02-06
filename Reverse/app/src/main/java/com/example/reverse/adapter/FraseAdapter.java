@@ -1,5 +1,6 @@
-package com.example.reverse;
+package com.example.reverse.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.reverse.models.Frase;
+import com.example.reverse.R;
+import com.example.reverse.models.TinyDB;
+import com.example.reverse.activities.Jugar;
 
 import java.util.ArrayList;
 
@@ -32,7 +38,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         //Manejo de cada frase_layout individualmente, se podrá acceder a todos los campos definidos en
         //ViewHolder mediante el parametro holder. Con position se puede acceder a cada usuario
         //replace the contents of the view con el holder, que es basicamente la vista del frase_layout
@@ -56,6 +62,14 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
             }
         });
 
+        holder.eliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //enviar a la actividad jugar
+                removeAt(position);
+            }
+        });
+
     }
 
     @Override
@@ -64,11 +78,12 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
     }
 
     //notifica del cambio para que se actualice
-    /*public void notifyInsertion(int position){
+    public void notifyInsertion(int position){
         notifyItemInserted(position);
+        notifyItemChanged(position, frases.size());
+        notifyItemRangeChanged(position, frases.size());
+        notifyDataSetChanged();
     }
-
-     */
 
 
     public void removeAt(int position){
@@ -78,6 +93,11 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         notifyItemChanged(position, frases.size());
         notifyItemRangeChanged(position, frases.size());
         tinyDB.putListObject("FrasesData", frases);
+    }
+
+    public void notifyUpdate(int position){
+        notifyItemChanged(position);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -94,6 +114,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
             score = itemView.findViewById(R.id.score_tarjeta);
             tiempo = itemView.findViewById(R.id.tiempo_tarjeta);
             jugar = itemView.findViewById(R.id.jugar_tarjeta);
+            eliminar = itemView.findViewById(R.id.eliminar_tarjeta);
         }
     }
 
@@ -114,6 +135,8 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
             return minutos+":"+segundos;
         }
     }
+
+
 
 
 }

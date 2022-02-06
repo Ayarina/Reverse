@@ -5,8 +5,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.widget.EditText;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reverse.models.Frase;
+import com.example.reverse.adapter.FraseAdapter;
+import com.example.reverse.R;
+import com.example.reverse.models.TinyDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -33,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Object> frases;
     private FraseAdapter fraseAdapter;
 
-
-
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +50,23 @@ public class MainActivity extends AppCompatActivity {
 
         tinyDB = new TinyDB(this);
         //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
-        if(tinyDB.getListObject("frases", Frase.class) != null)
-            frases = tinyDB.getListObject("frases", Frase.class);
+        if(tinyDB.getListObject("FrasesData", Frase.class) != null)
+            frases = tinyDB.getListObject("FrasesData", Frase.class);
         else
             frases = new ArrayList<>();
 
         //Inicializamos el adaptador
         fraseAdapter = new FraseAdapter(frases);
 
+        //Configuramos el RecyclerView con el UserAdapter como su controlador
+        recyclerView = (RecyclerView) findViewById(R.id.contact_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(fraseAdapter);
+
         fab_plus = findViewById(R.id.fab);
 
-        fab_plus.setOnClickListener(new View.OnClickListener() {
+        setSupportActionBar(binding.appBarMain.toolbar);
+        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -71,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
                                 //añadir frase
                                 Frase frase = new Frase(et_popup.getText().toString());
                                 frases.add(frase);
-                                tinyDB.putListObject("frases", frases);
+                                tinyDB.putListObject("FrasesData", frases);
+                                fraseAdapter.notifyInsertion(frases.size()-1);
                             }
                         });
 
@@ -89,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        //NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1039818456747",
+    "project_id": "reverse-f3fee",
+    "storage_bucket": "reverse-f3fee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1039818456747:android:103a2c0503c133d1fc41ee",
+        "android_client_info": {
+          "package_name": "com.example.reverse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1039818456747-632fdq48s8sqdh15814h9tlcem0qtp9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA04of8Zbct2i1-NgLBZu1kre7lqY1ysbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1039818456747-632fdq48s8sqdh15814h9tlcem0qtp9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

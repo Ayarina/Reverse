@@ -3,9 +3,6 @@ package com.example.reverse;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -17,6 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.reverse.ui.home.HomeFragment;
+import com.example.reverse.models.Frase;
+import com.example.reverse.adapter.FraseAdapter;
+import com.example.reverse.models.TinyDB;
 
 import java.util.ArrayList;
 
@@ -34,6 +34,9 @@ public class Jugar extends AppCompatActivity{
     private Frase frase;
     private TinyDB tinyDB;
 
+    private FraseAdapter fraseAdapter;
+    private RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,14 @@ public class Jugar extends AppCompatActivity{
         setContentView(R.layout.activity_jugar);
 
         tinyDB = new TinyDB(this);
+        //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
+        if(tinyDB.getListObject("FrasesData", Frase.class) != null)
+            frases = tinyDB.getListObject("FrasesData", Frase.class);
+        else
+            frases = new ArrayList<>();
 
+        //Inicializamos el adaptador
+        fraseAdapter = new FraseAdapter(frases);
 
         fraseText = findViewById(R.id.frase);
         fraseUsuario = findViewById(R.id.usuario_frase);
@@ -50,8 +60,6 @@ public class Jugar extends AppCompatActivity{
         botonVolver = findViewById(R.id.boton_volver);
         cronometro = findViewById(R.id.cronometro);
         puntuacion = findViewById(R.id.puntuacion);
-
-
 
         //Sacamos los datos del intent
         Intent intent = getIntent();
@@ -62,7 +70,6 @@ public class Jugar extends AppCompatActivity{
         botonTerminar.setEnabled(false);
 
         botonEmpezar.setEnabled(true);
-        botonTerminar.setVisibility(View.GONE);
         botonTerminar.setEnabled(false);
         botonVolver.setEnabled(true);
 
@@ -85,6 +92,8 @@ public class Jugar extends AppCompatActivity{
 
                             Intent intent = new Intent(Jugar.this, HomeFragment.class);
                             startActivity(intent);
+                            Toast.makeText(Jugar.this, "El tiempo ha superado el permitido", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     }
                 });
