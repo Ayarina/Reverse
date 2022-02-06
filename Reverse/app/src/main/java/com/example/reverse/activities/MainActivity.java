@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Object> frases;
     private FraseAdapter fraseAdapter;
 
+    private DatabaseReference myRef;
+
     private RecyclerView recyclerView;
 
     @Override
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         tinyDB = new TinyDB(this);
+        myRef = FirebaseDatabase.getInstance().getReference();
+        
         //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
         if(tinyDB.getListObject("FrasesData", Frase.class) != null)
             frases = tinyDB.getListObject("FrasesData", Frase.class);
@@ -81,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //añadir frase
                                 Frase frase = new Frase(et_popup.getText().toString());
+                                myRef.child("Frases").child(frase.getFrase()).setValue();
                                 frases.add(frase);
                                 tinyDB.putListObject("FrasesData", frases);
                                 fraseAdapter.notifyInsertion(frases.size()-1);

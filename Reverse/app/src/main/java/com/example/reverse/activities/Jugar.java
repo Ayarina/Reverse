@@ -1,8 +1,7 @@
-package com.example.reverse;
+package com.example.reverse.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -13,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.reverse.R;
 import com.example.reverse.ui.home.HomeFragment;
 import com.example.reverse.models.Frase;
 import com.example.reverse.adapter.FraseAdapter;
@@ -26,7 +26,7 @@ public class Jugar extends AppCompatActivity{
     private EditText fraseUsuario;
     private Button botonEmpezar;
     private Button botonTerminar;
-    private Button botonVolver;
+    private Button botonSalir;
     private Chronometer cronometro;
     private long time;
 
@@ -35,8 +35,6 @@ public class Jugar extends AppCompatActivity{
     private TinyDB tinyDB;
 
     private FraseAdapter fraseAdapter;
-    private RecyclerView recyclerView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +55,7 @@ public class Jugar extends AppCompatActivity{
         fraseUsuario = findViewById(R.id.usuario_frase);
         botonEmpezar = findViewById(R.id.boton_jugar);
         botonTerminar = findViewById(R.id.boton_terminar);
-        botonVolver = findViewById(R.id.boton_volver);
+        botonSalir = findViewById(R.id.boton_salir);
         cronometro = findViewById(R.id.cronometro);
         puntuacion = findViewById(R.id.puntuacion);
 
@@ -70,12 +68,17 @@ public class Jugar extends AppCompatActivity{
         botonTerminar.setEnabled(false);
 
         botonEmpezar.setEnabled(true);
-        botonTerminar.setEnabled(false);
-        botonVolver.setEnabled(true);
+        botonSalir.setEnabled(true);
 
         botonEmpezar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                botonEmpezar.setVisibility(View.GONE);
+                botonEmpezar.setEnabled(false);
+
+                botonTerminar.setVisibility(View.VISIBLE);
+                botonTerminar.setEnabled(true);
 
                 fraseUsuario.setText("");
                 cronometro.setBase(SystemClock.elapsedRealtime());
@@ -98,54 +101,45 @@ public class Jugar extends AppCompatActivity{
                     }
                 });
 
-
-                botonEmpezar.setEnabled(false);
-                botonEmpezar.setVisibility(View.GONE);
-
                 cronometro.start();
-                botonTerminar.setVisibility(View.VISIBLE);
-                botonTerminar.setEnabled(true);
-
-                botonTerminar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        cronometro.stop();
-                        time = SystemClock.elapsedRealtime() - cronometro.getBase();
-
-                        botonVolver.setEnabled(true);
-                        botonVolver.setVisibility(View.VISIBLE);
-
-                        botonEmpezar.setEnabled(true);
-                        botonEmpezar.setVisibility(View.VISIBLE);
-
-                        String mensaje = "Reintentar";
-                        botonEmpezar.setText(mensaje);
-
-                        puntuacion.setText(puntuacionUsuario());
-                        cronometro.setText(conversorTiempo());
-
-                        //Reset del cronometro.
-
-                        if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
-
-                            frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
-                            frase.setTiempo(time);
-                            frases.add(frase);
-                            tinyDB.putListObject("frases", frases);
-
-                        } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()) && (time < frase.getTiempo())){
-
-                            frase.setTiempo(time);
-                            frases.add(frase);
-                            tinyDB.putListObject("frases", frases);
-                        }
-
-                    }
-                });
             }
         });
 
-        botonVolver.setOnClickListener(new View.OnClickListener() {
+        botonTerminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cronometro.stop();
+                time = SystemClock.elapsedRealtime() - cronometro.getBase();
+
+                botonEmpezar.setEnabled(true);
+                botonEmpezar.setVisibility(View.VISIBLE);
+
+                String mensaje = "Reintentar";
+                botonEmpezar.setText(mensaje);
+
+                puntuacion.setText(puntuacionUsuario());
+                cronometro.setText(conversorTiempo());
+
+                //Reset del cronometro.
+
+                if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
+
+                    frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
+                    frase.setTiempo(time);
+                    frases.add(frase);
+                    tinyDB.putListObject("frases", frases);
+
+                } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()) && (time < frase.getTiempo())){
+
+                    frase.setTiempo(time);
+                    frases.add(frase);
+                    tinyDB.putListObject("frases", frases);
+                }
+
+            }
+        });
+
+        botonSalir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
