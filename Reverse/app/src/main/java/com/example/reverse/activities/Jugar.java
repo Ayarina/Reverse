@@ -95,11 +95,13 @@ public class Jugar extends AppCompatActivity{
                 cronometro.setBase(SystemClock.elapsedRealtime());
                 time = 0;
 
-                botonEmpezar.setVisibility(View.GONE);
+                botonEmpezar.setVisibility(View.INVISIBLE);
                 botonEmpezar.setEnabled(false);
 
                 botonTerminar.setVisibility(View.VISIBLE);
                 botonTerminar.setEnabled(true);
+
+                cronometro.start();
 
                 cronometro.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
                     @Override
@@ -109,30 +111,28 @@ public class Jugar extends AppCompatActivity{
                             cronometro.setBase(SystemClock.elapsedRealtime());
                             //Toast aqui para informar al usuario
                             Toast.makeText(Jugar.this, "El tiempo ha superado el permitido, volviendo al inicio.", Toast.LENGTH_SHORT).show();
-
-                            Intent intent = new Intent(Jugar.this, HomeFragment.class);
-                            startActivity(intent);
-                            Toast.makeText(Jugar.this, "El tiempo ha superado el permitido", Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     }
                 });
-
-                cronometro.start();
             }
         });
 
         botonTerminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 cronometro.stop();
                 time = SystemClock.elapsedRealtime() - cronometro.getBase();
+
+                String mensaje = "Reintentar";
+                botonEmpezar.setText(mensaje);
 
                 botonEmpezar.setEnabled(true);
                 botonEmpezar.setVisibility(View.VISIBLE);
 
-                String mensaje = "Reintentar";
-                botonEmpezar.setText(mensaje);
+                botonTerminar.setVisibility(View.INVISIBLE);
+                botonTerminar.setEnabled(false);
 
                 puntuacion.setText(puntuacionUsuario());
 
