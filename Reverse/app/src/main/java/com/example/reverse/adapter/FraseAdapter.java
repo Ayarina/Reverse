@@ -73,11 +73,9 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
             }
         });
 
-        String score = String.valueOf(result.getPuntuacion());
-        String tiempo = formatoTiempo(result);
         holder.frase.setText(frase.getFrase());
-        holder.score.setText(score);
-        holder.tiempo.setText(tiempo);
+        holder.score.setText(String.valueOf(result.getPuntuacion()));
+        holder.tiempo.setText(formatoTiempo(result));
         holder.jugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
