@@ -102,6 +102,7 @@ public class Jugar extends AppCompatActivity{
             public void onClick(View view) {
 
                 fraseUsuario.setText("");
+                puntuacion.setText("");
                 cronometro.setBase(SystemClock.elapsedRealtime());
                 time = 0;
 
@@ -144,22 +145,28 @@ public class Jugar extends AppCompatActivity{
                 botonTerminar.setVisibility(View.INVISIBLE);
                 botonTerminar.setEnabled(false);
 
-                puntuacion.setText(String.valueOf(puntuacionUsuario()));
+                if (!fraseUsuario.getText().toString().equals("")) {
 
-                if (!fraseUsuario.getText().toString().isEmpty()) {
+                    int puntos = puntuacionUsuario();
+                    mensaje = "Puntuacion obtenida: " + puntos + " puntos";
+                    //String.valueOf(puntuacionUsuario())
+                    puntuacion.setText(mensaje);
+                    //Integer.parseInt(puntuacion.getText().toString())
 
-                    if (Integer.parseInt(puntuacion.getText().toString()) > result.getPuntuacion()) {
+                    if (puntos > result.getPuntuacion()) {
                         Log.d("Jugar", "puntuacion mayor");
                         result.setTiempo(time);
-                        result.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
+                        result.setPuntuacion(puntos);
 
-                    } else if ((Integer.parseInt(puntuacion.getText().toString()) == result.getPuntuacion()) && (time < result.getTiempo())) {
+                    } else if ((puntos == result.getPuntuacion()) && (time < result.getTiempo())) {
                         Log.d("Jugar", "Mejor tiempo");
                         result.setTiempo(time);
                     }
 
                     myRef.child("Frases").child(frase.getFrase()).child("Usuarios").child(user.getUid()).setValue(result);
 
+                } else {
+                    puntuacion.setText("-");
                 }
             }
         });
@@ -175,41 +182,42 @@ public class Jugar extends AppCompatActivity{
 
     private int puntuacionUsuario (){
 
+        String fraseUser = fraseUsuario.getText().toString();
         int puntos = frase.getPuntuacionMaxima();
         int aux;
 
-        if (fraseUsuario.length() == frase.getFraseInvertida().length()){
+        if (!fraseUser.equals(frase.getFraseInvertida())) {
+            if (fraseUsuario.length() == frase.getFraseInvertida().length()) {
 
-            for (int i = 0; i < fraseUsuario.length(); i++){
+                for (int i = 0; i < fraseUsuario.length(); i++) {
 
-                if (fraseUsuario.toString().charAt(i) != frase.getFraseInvertida().charAt(i)){
-                    puntos -= 2;
+                    if (fraseUser.charAt(i) != frase.getFraseInvertida().charAt(i)) {
+                        puntos -= 2;
+                    }
                 }
-            }
-        }
-        else if (fraseUsuario.length() < frase.getFraseInvertida().length()){
+            } else if (fraseUsuario.length() < frase.getFraseInvertida().length()) {
 
-            for (aux = 0; aux < fraseUsuario.length(); aux++){
+                for (aux = 0; aux < fraseUsuario.length(); aux++) {
 
-                if (fraseUsuario.toString().charAt(aux) != frase.getFraseInvertida().charAt(aux)){
-                    puntos -= 2;
+                    if (fraseUser.charAt(aux) != frase.getFraseInvertida().charAt(aux)) {
+                        puntos -= 2;
+                    }
                 }
-            }
 
-            aux = frase.getFraseInvertida().length() - (aux + 1);
-            puntos -= (aux * 2);
-        }
-        else if (fraseUsuario.length() > frase.getFraseInvertida().length()){
+                aux = frase.getFraseInvertida().length() - (aux + 1);
+                puntos -= (aux * 2);
+            } else {
 
-            for (aux = 0; aux < frase.getFraseInvertida().length(); aux++){
+                for (aux = 0; aux < frase.getFraseInvertida().length(); aux++) {
 
-                if (fraseUsuario.toString().charAt(aux) != frase.getFraseInvertida().charAt(aux)){
-                    puntos -= 2;
+                    if (fraseUser.charAt(aux) != frase.getFraseInvertida().charAt(aux)) {
+                        puntos -= 2;
+                    }
                 }
-            }
 
-            aux = fraseUsuario.length() - (aux + 1);
-            puntos -= (aux * 2);
+                aux = fraseUsuario.length() - (aux + 1);
+                puntos -= (aux * 2);
+            }
         }
 
         return puntos;

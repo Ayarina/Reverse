@@ -43,6 +43,7 @@
         android:hint="@string/contrase_a"
         android:paddingTop="25dp"
         android:textSize="20sp"
+        android:inputType="textPassword"
         />
 
     <Button

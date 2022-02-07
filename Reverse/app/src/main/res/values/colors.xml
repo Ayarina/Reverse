@@ -12,4 +12,9 @@
     <color name="gris_oscuro">#606060</color>
     <color name="negro_notannegro">#363636</color>
     <color name="gris_clarooscuro">#8d8d8d</color>
+    <color name="azul_ocuro">#1A374D</color>
+    <color name="azul">#406882</color>
+    <color name="azul_cian">#6998AB</color>
+    <color name="azul_claro">#B1D0E0</color>
+    <color name="amarillo_fondo">#ECB365</color>
 </resources>
