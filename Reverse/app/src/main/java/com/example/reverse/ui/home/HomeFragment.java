@@ -14,8 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.reverse.models.Frase;
 import com.example.reverse.adapter.FraseAdapter;
 import com.example.reverse.R;
-import com.example.reverse.models.TinyDB;
 import com.example.reverse.databinding.FragmentHomeBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.ArrayList;
@@ -26,27 +30,23 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
 
     private FraseAdapter fraseAdapter;
-    private TinyDB tinyDB;
     private RecyclerView recyclerView;
-    private ArrayList<Object> frases;
+    private ArrayList<Object> frases = new ArrayList<>();
+
+    private DatabaseReference myRef;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        myRef = FirebaseDatabase.getInstance().getReference("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/");
+
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        //Inicializamos la base de datos
-        tinyDB = new TinyDB(getContext());
-        //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
-        if(tinyDB.getListObject("FrasesData", Frase.class) != null)
-            frases = tinyDB.getListObject("FrasesData", Frase.class);
-        else
-            frases = new ArrayList<>();
 
         //Inicializamos el adaptador
         fraseAdapter = new FraseAdapter(frases);
@@ -55,6 +55,23 @@ public class HomeFragment extends Fragment {
         recyclerView = (RecyclerView) root.findViewById(R.id.contact_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(fraseAdapter);
+
+        ValueEventListener fraseListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Frase frase;
+                for(DataSnapshot fraseSnapshot: dataSnapshot.getChildren()){
+                    frase = new Frase(fraseSnapshot.child("frase").getValue(String.class));
+                    frases.add(frase);
+                }
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        myRef.child("Frases").addValueEventListener(fraseListener);
 
         //Configuración del SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) root.findViewById( R.id.swiperefreshlayout ) ;

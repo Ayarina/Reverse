@@ -1,5 +1,6 @@
 package com.example.reverse.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,10 +14,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.reverse.R;
+import com.example.reverse.models.Resultado;
 import com.example.reverse.ui.home.HomeFragment;
 import com.example.reverse.models.Frase;
 import com.example.reverse.adapter.FraseAdapter;
-import com.example.reverse.models.TinyDB;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -32,7 +40,11 @@ public class Jugar extends AppCompatActivity{
 
     private ArrayList<Object> frases;
     private Frase frase;
-    private TinyDB tinyDB;
+    private Resultado result;
+
+
+    private DatabaseReference myRef;
+    private FirebaseAuth mAuth;
 
     private FraseAdapter fraseAdapter;
 
@@ -41,15 +53,21 @@ public class Jugar extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jugar);
 
-        tinyDB = new TinyDB(this);
-        //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
-        if(tinyDB.getListObject("FrasesData", Frase.class) != null)
-            frases = tinyDB.getListObject("FrasesData", Frase.class);
-        else
-            frases = new ArrayList<>();
+        mAuth = FirebaseAuth.getInstance();
+        myRef = FirebaseDatabase.getInstance().getReference("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/");
+        FirebaseUser user = mAuth.getCurrentUser();
 
-        //Inicializamos el adaptador
-        fraseAdapter = new FraseAdapter(frases);
+        myRef.child("Frases").child(frase.getFrase()).child("Usuarios").child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    result = new Resultado();
+                } else {
+                    result = task.getResult().getValue(Resultado.class);
+                }
+            }
+        });
+
 
         fraseText = findViewById(R.id.frase);
         fraseUsuario = findViewById(R.id.usuario_frase);
@@ -59,7 +77,6 @@ public class Jugar extends AppCompatActivity{
         cronometro = findViewById(R.id.cronometro);
         puntuacion = findViewById(R.id.puntuacion);
 
-        //Sacamos los datos del intent
         Intent intent = getIntent();
         frase = (Frase) intent.getSerializableExtra("fraseJugar");
         fraseText.setText(frase.getFrase());
@@ -74,15 +91,15 @@ public class Jugar extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
+                fraseUsuario.setText("");
+                cronometro.setBase(SystemClock.elapsedRealtime());
+                time = 0;
+
                 botonEmpezar.setVisibility(View.GONE);
                 botonEmpezar.setEnabled(false);
 
                 botonTerminar.setVisibility(View.VISIBLE);
                 botonTerminar.setEnabled(true);
-
-                fraseUsuario.setText("");
-                cronometro.setBase(SystemClock.elapsedRealtime());
-                time = 0;
 
                 cronometro.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
                     @Override
@@ -118,24 +135,27 @@ public class Jugar extends AppCompatActivity{
                 botonEmpezar.setText(mensaje);
 
                 puntuacion.setText(puntuacionUsuario());
-                cronometro.setText(conversorTiempo());
 
-                //Reset del cronometro.
+                if (!fraseUsuario.getText().toString().isEmpty()) {
 
-                if (Integer.parseInt(puntuacion.getText().toString()) > frase.getPuntuacion()){
+                    try {
 
-                    frase.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
-                    frase.setTiempo(time);
-                    frases.add(frase);
-                    tinyDB.putListObject("frases", frases);
+                        if (Integer.parseInt(puntuacion.getText().toString()) > result.getPuntuacion()) {
 
-                } else if ((Integer.parseInt(puntuacion.getText().toString()) == frase.getPuntuacion()) && (time < frase.getTiempo())){
+                            result.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
+                            myRef.child("Frases").child(frase.getFrase()).child("Usuarios").child(user.getUid()).setValue(result);
 
-                    frase.setTiempo(time);
-                    frases.add(frase);
-                    tinyDB.putListObject("frases", frases);
+                        } else if ((Integer.parseInt(puntuacion.getText().toString()) == result.getPuntuacion()) && (time < result.getTiempo())) {
+
+                            result.setTiempo(time);
+                            myRef.child("Frases").child(frase.getFrase()).child("Usuarios").child(user.getUid()).setValue(result);
+                        }
+
+
+                    } catch (Exception e){
+                        e.getStackTrace();
+                    }
                 }
-
             }
         });
 
@@ -143,28 +163,9 @@ public class Jugar extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(Jugar.this, HomeFragment.class);
-                startActivity(intent);
+                finish();
             }
         });
-    }
-
-    private String conversorTiempo(){
-
-        int minutos, segundos;
-
-        segundos = (int) ((time-time%1000)/1000)%60;
-        minutos = (int) ((((time-time%1000)/1000)-segundos)/60)%60;
-
-        if (minutos < 10 && segundos < 10){
-            return "0"+minutos+":0"+segundos;
-        } else if (minutos < 10){
-            return "0" + minutos + ":" + segundos;
-        } else if (segundos < 10){
-            return minutos+":0"+segundos;
-        } else{
-            return minutos+":"+segundos;
-        }
     }
 
     private int puntuacionUsuario (){
@@ -172,11 +173,7 @@ public class Jugar extends AppCompatActivity{
         int puntos = frase.getPuntuacionMaxima();
         int aux;
 
-        if (fraseUsuario.getText().toString().equals(frase.getFraseInvertida())){
-
-            return frase.getPuntuacionMaxima();
-        }
-        else if (fraseUsuario.length() == frase.getFraseInvertida().length()){
+        if (fraseUsuario.length() == frase.getFraseInvertida().length()){
 
             for (int i = 0; i < fraseUsuario.length(); i++){
 
@@ -197,7 +194,7 @@ public class Jugar extends AppCompatActivity{
             aux = frase.getFraseInvertida().length() - (aux + 1);
             puntos -= (aux * 2);
         }
-        else {
+        else if (fraseUsuario.length() > frase.getFraseInvertida().length()){
 
             for (aux = 0; aux < frase.getFraseInvertida().length(); aux++){
 

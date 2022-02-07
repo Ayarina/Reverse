@@ -1,4 +1,4 @@
-package com.example.reverse;
+package com.example.reverse.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.reverse.models.Frase;
 import com.example.reverse.adapter.FraseAdapter;
 import com.example.reverse.R;
+import com.example.reverse.models.Resultado;
 import com.example.reverse.models.TinyDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -26,6 +26,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.reverse.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -35,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private FloatingActionButton fab_plus;
 
-    private TinyDB tinyDB;
     private ArrayList<Object> frases;
     private FraseAdapter fraseAdapter;
 
@@ -50,14 +53,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        tinyDB = new TinyDB(this);
-        myRef = FirebaseDatabase.getInstance().getReference();
-        
-        //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
-        if(tinyDB.getListObject("FrasesData", Frase.class) != null)
-            frases = tinyDB.getListObject("FrasesData", Frase.class);
-        else
-            frases = new ArrayList<>();
+        myRef = FirebaseDatabase.getInstance().getReference("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/");
 
         //Inicializamos el adaptador
         fraseAdapter = new FraseAdapter(frases);
@@ -85,9 +81,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //añadir frase
                                 Frase frase = new Frase(et_popup.getText().toString());
-                                myRef.child("Frases").child(frase.getFrase()).setValue();
-                                frases.add(frase);
-                                tinyDB.putListObject("FrasesData", frases);
+                                myRef.child("Frases").child(frase.getFrase()).setValue(frase);
                                 fraseAdapter.notifyInsertion(frases.size()-1);
                             }
                         });
