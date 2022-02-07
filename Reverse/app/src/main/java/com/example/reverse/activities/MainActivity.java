@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.reverse.models.Frase;
 import com.example.reverse.adapter.FraseAdapter;
 import com.example.reverse.R;
+import com.example.reverse.models.Resultado;
 import com.example.reverse.models.TinyDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -25,6 +26,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.reverse.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -32,13 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private FloatingActionButton fab_plus;
 
-    private TinyDB tinyDB;
-    private ArrayList<Object> frases;
-    private FraseAdapter fraseAdapter;
-
-    private RecyclerView recyclerView;
+    private DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,22 +47,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        tinyDB = new TinyDB(this);
-        //Inicializamos el ArrayList (comprobando antes si esta vacío o no)
-        if(tinyDB.getListObject("FrasesData", Frase.class) != null)
-            frases = tinyDB.getListObject("FrasesData", Frase.class);
-        else
-            frases = new ArrayList<>();
-
-        //Inicializamos el adaptador
-        fraseAdapter = new FraseAdapter(frases);
-
-        //Configuramos el RecyclerView con el UserAdapter como su controlador
-        recyclerView = (RecyclerView) findViewById(R.id.contact_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(fraseAdapter);
-
-        fab_plus = findViewById(R.id.fab);
+        myRef = FirebaseDatabase.getInstance("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
         setSupportActionBar(binding.appBarMain.toolbar);
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
@@ -80,9 +65,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //añadir frase
                                 Frase frase = new Frase(et_popup.getText().toString());
-                                frases.add(frase);
-                                tinyDB.putListObject("FrasesData", frases);
-                                fraseAdapter.notifyInsertion(frases.size()-1);
+                                myRef.child("Frases").child(frase.getFrase()).setValue(frase);
                             }
                         });
 

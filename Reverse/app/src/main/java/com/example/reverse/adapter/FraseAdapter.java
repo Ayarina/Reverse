@@ -2,6 +2,7 @@ package com.example.reverse.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reverse.models.Frase;
 import com.example.reverse.R;
+import com.example.reverse.models.Resultado;
 import com.example.reverse.models.TinyDB;
 import com.example.reverse.activities.Jugar;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -23,7 +32,8 @@ import java.util.ArrayList;
 public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> {
 
     private ArrayList<Object> frases;
-    private TinyDB tinyDB;
+    private Resultado result = new Resultado();
+    private DatabaseReference mdatabase = FirebaseDatabase.getInstance("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
     public FraseAdapter(ArrayList<Object> frases){
         this.frases = frases;
@@ -33,25 +43,39 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //asignamos el frase_layout al recycler view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.frase_layout, parent, false);
-        tinyDB = new TinyDB(parent.getContext());
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        //Manejo de cada frase_layout individualmente, se podrá acceder a todos los campos definidos en
-        //ViewHolder mediante el parametro holder. Con position se puede acceder a cada usuario
-        //replace the contents of the view con el holder, que es basicamente la vista del frase_layout
-        //obtenemos el usuario de la BD
+
         Frase frase = (Frase) frases.get(position);
-        //Seteamos los datos del usuario añadido al crearse.
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        mdatabase.child("Frases").child(frase.getFrase()).child("Usuarios").child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    result = new Resultado();
+                    Log.d("onBindViewHolder[" + frase.getFrase() + "]", "Result not found");
+
+                } else {
+                    Resultado aux = task.getResult().getValue(Resultado.class);
+                    if(aux == null) {
+                        result = new Resultado();
+                        Log.d("onBindViewHolder[" + frase.getFrase() + "]", "Result null asignado a vacío");
+                    }
+                    else{
+                        result = new Resultado(aux.getPuntuacion(), aux.getTiempo());
+                        Log.d("onBindViewHolder[" + frase.getFrase() + "]", "Result asignado a: score=" + result.getPuntuacion() + " time=" + result.getTiempo());
+                    }
+                }
+            }
+        });
 
         holder.frase.setText(frase.getFrase());
-        holder.score.setText(String.valueOf(frase.getPuntuacion()));
-        //holder.tiempo.setBase(frase.getTiempo());
-        //score --
-        holder.tiempo.setText(formatoTiempo(frase));
-        //boton
+        holder.score.setText(String.valueOf(result.getPuntuacion()));
+        holder.tiempo.setText(formatoTiempo(result));
         holder.jugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,27 +101,12 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         return frases.size();
     }
 
-    //notifica del cambio para que se actualice
-    public void notifyInsertion(int position){
-        notifyItemInserted(position);
-        notifyItemChanged(position, frases.size());
-        notifyItemRangeChanged(position, frases.size());
-        notifyDataSetChanged();
-    }
-
-
     public void removeAt(int position){
         //Notificamos al recycler
-        frases.remove(position);
+        mdatabase.child("Frases").child(((Frase)frases.get(position)).getFrase()).removeValue();
         notifyItemRemoved(position);
         notifyItemChanged(position, frases.size());
         notifyItemRangeChanged(position, frases.size());
-        tinyDB.putListObject("FrasesData", frases);
-    }
-
-    public void notifyUpdate(int position){
-        notifyItemChanged(position);
-        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -118,22 +127,25 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
         }
     }
 
-    private String formatoTiempo(Frase frase){
+    private String formatoTiempo(Resultado result){
 
         int minutos, segundos;
+        String tiempo;
 
-        segundos = (int) ((frase.getTiempo()-frase.getTiempo()%1000)/1000)%60;
-        minutos = (int) ((((frase.getTiempo()-frase.getTiempo()%1000)/1000)-segundos)/60)%60;
+        segundos = (int) ((result.getTiempo()-result.getTiempo()%1000)/1000)%60;
+        minutos = (int) ((((result.getTiempo()-result.getTiempo()%1000)/1000)-segundos)/60)%60;
 
         if (minutos < 10 && segundos < 10){
-            return "0"+minutos+":0"+segundos;
+            tiempo =  "0"+minutos+":0"+segundos;
         } else if (minutos < 10){
-            return  "0"+minutos+":"+segundos;
+            tiempo =  "0"+minutos+":"+segundos;
         } else if (segundos < 10){
-            return minutos+":0"+segundos;
+            tiempo =  minutos+":0"+segundos;
         } else {
-            return minutos+":"+segundos;
+            tiempo = minutos+":"+segundos;
         }
+
+        return tiempo;
     }
 
 

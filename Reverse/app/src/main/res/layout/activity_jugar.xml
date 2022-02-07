@@ -6,12 +6,16 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:gravity="center"
+    android:theme="@style/Theme.Reverse"
     tools:context=".activities.Jugar">
 
     <View
+        android:id="@+id/barra_superior"
         android:layout_width="wrap_content"
         android:layout_height="3dp"
-        android:layout_marginTop="140dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:background="@color/black"
@@ -26,8 +30,9 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="150dp"
-        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        android:layout_below="@id/barra_superior"
         />
 
     <View
@@ -40,72 +45,78 @@
         android:layout_below="@id/frase"
         />
 
-
-
     <Chronometer
         android:id="@+id/cronometro"
         android:text="00:00,000"
-        android:textColor="@color/black"
         android:textSize="20sp"
         android:layout_width="match_parent"
         android:layout_height="105dp"
         android:layout_below="@+id/frase"
-        android:layout_marginTop="60dp"
-        android:layout_marginLeft="150dp"
-        android:layout_marginRight="150dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="145dp"
+        android:layout_marginRight="145dp"
         android:background="@drawable/circulo"
         android:gravity="center"
         />
 
+    <TextView
+        android:id="@+id/puntuacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="35dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:textAlignment="center"
+        android:layout_below="@id/cronometro"
+        />
+
     <EditText
         android:id="@+id/usuario_frase"
-        android:hint="@string/frase_usuario"
-        android:textSize="25sp"
-        android:textColorHint="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/puntuacion"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="60dp"
-        android:layout_below="@+id/cronometro"
-        android:gravity="center"
-        android:background="@drawable/fondo_introducir_frase"
-        />
+        android:textAlignment="center"
+        android:hint="@string/frase_usuario"
+        android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/boton_jugar"
-        android:text="@string/boton_empezar"
-        android:textColor="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginTop="70dp"
-        android:layout_below="@id/usuario_frase"
-        />
-
-    <Button
-        android:id="@+id/boton_terminar"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/botones"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/usuario_frase"
         android:layout_marginLeft="60dp"
-        android:layout_marginTop="70dp"
         android:layout_marginRight="60dp"
-        android:text="Terminar"
-        android:textColor="@color/black" />
+        android:layout_marginTop="70dp">
+        <Button
+            android:id="@+id/boton_jugar"
+            android:text="@string/boton_empezar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <Button
+            android:id="@+id/boton_terminar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/boton_terminar"
+            />
+    </RelativeLayout>
+
 
     <Button
-        android:id="@+id/boton_volver"
-        android:text="@string/boton_volver"
-        android:textColor="@color/black"
-        android:backgroundTint="@color/gris_oscuro"
+        android:id="@+id/boton_salir"
+        android:text="@string/boton_salir"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
-        android:layout_marginTop="50dp"
-        android:layout_below="@id/boton_jugar"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/botones"
         />
 
 

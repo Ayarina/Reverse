@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.example.reverse.R;
 import com.example.reverse.models.Usuario;
-import com.example.reverse.ui.home.HomeFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -71,10 +70,8 @@ public class LogInActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             //currentUser = new Usuario(username, email);
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-                            Toast.makeText(LogInActivity.this, "Bienvenido" + currentUser.getUsername() +
-                                    "/" + currentUser.getCorreo(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LogInActivity.this, "Bienvenido" + email, Toast.LENGTH_SHORT).show();
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.

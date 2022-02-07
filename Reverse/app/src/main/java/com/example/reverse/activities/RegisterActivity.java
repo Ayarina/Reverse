@@ -12,11 +12,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.reverse.models.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -25,6 +28,8 @@ public class RegisterActivity extends AppCompatActivity {
     private Button botonRegister;
     private EditText username, correo, contraseña, contraseñaCheck;
 
+    private DatabaseReference myRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        myRef = FirebaseDatabase.getInstance("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
         username = findViewById(R.id.username_register);
         correo = findViewById(R.id.correo_register);
@@ -60,6 +66,8 @@ public class RegisterActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            assert user != null;
+                            writeNewUser(user.getUid(),username.getText().toString(), email);
                             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                             Toast.makeText(RegisterActivity.this, "Se ha registrado satisfactoriamente", Toast.LENGTH_SHORT).show();
                             startActivity(intent);
@@ -73,5 +81,10 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    public void writeNewUser(String userId, String name, String email) {
+        Usuario user = new Usuario(name, email);
+        myRef.child("users").child(userId).setValue(user);
     }
 }

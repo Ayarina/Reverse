@@ -9,15 +9,11 @@ public class Frase implements Serializable {
     private String frase;
     private String fraseInvertida;
     private int puntuacionMaxima;
-    private int puntuacion;
-    private long tiempo;
 
     public Frase(String frase) {
         this.frase = frase;
         this.fraseInvertida = invertirFrase();
         this.puntuacionMaxima = puntuacionMaxima();
-        this.puntuacion = 0;
-        this.tiempo = 0L;
     }
 
     public String getFrase() {
@@ -32,35 +28,22 @@ public class Frase implements Serializable {
         return puntuacionMaxima;
     }
 
-    public int getPuntuacion() {
-        return puntuacion;
-    }
-
-    public void setPuntuacion(int puntuacion) {
-        this.puntuacion = puntuacion;
-    }
-
-    public long getTiempo() {
-        return tiempo;
-    }
-
-    public void setTiempo(long tiempo) {
-        this.tiempo = tiempo;
-    }
-
     private int puntuacionMaxima(){
 
         int longitudFrase = (int) frase.chars().filter(ch -> ch != ' ').count();
+        int puntuacionMax;
 
         if (longitudFrase <= 30){
-            return 50;
+            puntuacionMax = 50;
         } else if (longitudFrase <= 50){
-            return 100;
+            puntuacionMax = 100;
         } else if (longitudFrase <= 100){
-            return 150;
+            puntuacionMax = 150;
         } else {
-            return 200;
+            puntuacionMax = 200;
         }
+
+        return puntuacionMax;
     }
 
     private String invertirFrase(){
