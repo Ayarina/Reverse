@@ -2,6 +2,7 @@ package com.example.reverse.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
 
     private ArrayList<Object> frases;
     private Resultado result = new Resultado();
+    private DatabaseReference mdatabase = FirebaseDatabase.getInstance("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
     public FraseAdapter(ArrayList<Object> frases){
         this.frases = frases;
@@ -48,21 +50,34 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         Frase frase = (Frase) frases.get(position);
-        DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         mdatabase.child("Frases").child(frase.getFrase()).child("Usuarios").child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    result = task.getResult().getValue(Resultado.class);
+                if (!task.isSuccessful()) {
+                    result = new Resultado();
+                    Log.d("onBindViewHolder[" + frase.getFrase() + "]", "Result not found");
+
+                } else {
+                    Resultado aux = task.getResult().getValue(Resultado.class);
+                    if(aux == null) {
+                        result = new Resultado();
+                        Log.d("onBindViewHolder[" + frase.getFrase() + "]", "Result null asignado a vacío");
+                    }
+                    else{
+                        result = new Resultado(aux.getPuntuacion(), aux.getTiempo());
+                        Log.d("onBindViewHolder[" + frase.getFrase() + "]", "Result asignado a: score=" + result.getPuntuacion() + " time=" + result.getTiempo());
+                    }
                 }
             }
         });
 
+        String score = String.valueOf(result.getPuntuacion());
+        String tiempo = formatoTiempo(result);
         holder.frase.setText(frase.getFrase());
-        holder.score.setText(String.valueOf(result.getPuntuacion()));
-        holder.tiempo.setText(formatoTiempo(result));
+        holder.score.setText(score);
+        holder.tiempo.setText(tiempo);
         holder.jugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +105,7 @@ public class FraseAdapter extends RecyclerView.Adapter<FraseAdapter.ViewHolder> 
 
     public void removeAt(int position){
         //Notificamos al recycler
-        frases.remove(position);
+        mdatabase.child("Frases").child(((Frase)frases.get(position)).getFrase()).removeValue();
         notifyItemRemoved(position);
         notifyItemChanged(position, frases.size());
         notifyItemRangeChanged(position, frases.size());

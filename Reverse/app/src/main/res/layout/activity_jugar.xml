@@ -84,27 +84,29 @@
         android:hint="@string/frase_usuario"
         android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/boton_jugar"
-        android:text="@string/boton_empezar"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/botones"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/usuario_frase"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
-        android:layout_marginTop="70dp"
-        android:layout_below="@id/usuario_frase"
-        />
+        android:layout_marginTop="70dp">
+        <Button
+            android:id="@+id/boton_jugar"
+            android:text="@string/boton_empezar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
 
-    <Button
-        android:id="@+id/boton_terminar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/usuario_frase"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginRight="60dp"
-        android:text="@string/boton_terminar"
-        />
+        <Button
+            android:id="@+id/boton_terminar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/boton_terminar"
+            />
+    </RelativeLayout>
+
 
     <Button
         android:id="@+id/boton_salir"
@@ -114,7 +116,7 @@
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
         android:layout_marginTop="30dp"
-        android:layout_below="@id/boton_jugar"
+        android:layout_below="@id/botones"
         />
 
 

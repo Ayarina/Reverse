@@ -37,14 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private FloatingActionButton fab_plus;
-
-    private ArrayList<Object> frases;
-    private FraseAdapter fraseAdapter;
 
     private DatabaseReference myRef;
-
-    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +47,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        myRef = FirebaseDatabase.getInstance().getReference("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/");
-
-        //Inicializamos el adaptador
-        fraseAdapter = new FraseAdapter(frases);
-
-        //Configuramos el RecyclerView con el UserAdapter como su controlador
-        recyclerView = (RecyclerView) findViewById(R.id.contact_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(fraseAdapter);
-
-        fab_plus = findViewById(R.id.fab);
+        myRef = FirebaseDatabase.getInstance("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
         setSupportActionBar(binding.appBarMain.toolbar);
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                                 //añadir frase
                                 Frase frase = new Frase(et_popup.getText().toString());
                                 myRef.child("Frases").child(frase.getFrase()).setValue(frase);
-                                fraseAdapter.notifyInsertion(frases.size()-1);
                             }
                         });
 

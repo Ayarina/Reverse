@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -46,24 +47,35 @@ public class Jugar extends AppCompatActivity{
     private DatabaseReference myRef;
     private FirebaseAuth mAuth;
 
-    private FraseAdapter fraseAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jugar);
 
         mAuth = FirebaseAuth.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/");
+        myRef = FirebaseDatabase.getInstance("https://reverse-f3fee-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
         FirebaseUser user = mAuth.getCurrentUser();
+
+        Intent intent = getIntent();
+        frase = (Frase) intent.getSerializableExtra("fraseJugar");
 
         myRef.child("Frases").child(frase.getFrase()).child("Usuarios").child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
                     result = new Resultado();
+                    Log.d("Jugar", "Result not found");
+
                 } else {
                     result = task.getResult().getValue(Resultado.class);
+                    if(result == null) {
+                        result = new Resultado();
+                        Log.d("Jugar", "Result null asignado a vacío");
+                    }
+                    else{
+                        Log.d("Jugar", "Result asignado a: score=" + result.getPuntuacion() + " time=" + result.getTiempo());
+                    }
+
                 }
             }
         });
@@ -77,8 +89,6 @@ public class Jugar extends AppCompatActivity{
         cronometro = findViewById(R.id.cronometro);
         puntuacion = findViewById(R.id.puntuacion);
 
-        Intent intent = getIntent();
-        frase = (Frase) intent.getSerializableExtra("fraseJugar");
         fraseText.setText(frase.getFrase());
 
         botonTerminar.setVisibility(View.INVISIBLE);
@@ -109,10 +119,6 @@ public class Jugar extends AppCompatActivity{
                             cronometro.setBase(SystemClock.elapsedRealtime());
                             //Toast aqui para informar al usuario
                             Toast.makeText(Jugar.this, "El tiempo ha superado el permitido, volviendo al inicio.", Toast.LENGTH_SHORT).show();
-
-                            Intent intent = new Intent(Jugar.this, HomeFragment.class);
-                            startActivity(intent);
-                            Toast.makeText(Jugar.this, "El tiempo ha superado el permitido", Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     }
@@ -131,30 +137,28 @@ public class Jugar extends AppCompatActivity{
                 botonEmpezar.setEnabled(true);
                 botonEmpezar.setVisibility(View.VISIBLE);
 
+                botonTerminar.setEnabled(false);
+                botonEmpezar.setVisibility(View.GONE);
+
                 String mensaje = "Reintentar";
                 botonEmpezar.setText(mensaje);
 
-                puntuacion.setText(puntuacionUsuario());
+                puntuacion.setText(String.valueOf(puntuacionUsuario()));
 
                 if (!fraseUsuario.getText().toString().isEmpty()) {
 
-                    try {
+                    if (Integer.parseInt(puntuacion.getText().toString()) > result.getPuntuacion()) {
+                        Log.d("Jugar", "puntuacion mayor");
+                        result.setTiempo(time);
+                        result.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
 
-                        if (Integer.parseInt(puntuacion.getText().toString()) > result.getPuntuacion()) {
-
-                            result.setPuntuacion(Integer.parseInt(puntuacion.getText().toString()));
-                            myRef.child("Frases").child(frase.getFrase()).child("Usuarios").child(user.getUid()).setValue(result);
-
-                        } else if ((Integer.parseInt(puntuacion.getText().toString()) == result.getPuntuacion()) && (time < result.getTiempo())) {
-
-                            result.setTiempo(time);
-                            myRef.child("Frases").child(frase.getFrase()).child("Usuarios").child(user.getUid()).setValue(result);
-                        }
-
-
-                    } catch (Exception e){
-                        e.getStackTrace();
+                    } else if ((Integer.parseInt(puntuacion.getText().toString()) == result.getPuntuacion()) && (time < result.getTiempo())) {
+                        Log.d("Jugar", "Mejor tiempo");
+                        result.setTiempo(time);
                     }
+
+                    myRef.child("Frases").child(frase.getFrase()).child("Usuarios").child(user.getUid()).setValue(result);
+
                 }
             }
         });
